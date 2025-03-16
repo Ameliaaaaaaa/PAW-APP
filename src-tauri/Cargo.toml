@@ -1,0 +1,32 @@
+[package]
+name = "PAW"
+version = "0.0.1"
+description = "PAW"
+authors = ["Amelia"]
+license = ""
+repository = ""
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.4", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+log = "0.4"
+tauri = { version = "2.2.4", features = [] }
+tauri-plugin-log = "2"
+tauri-plugin-store = "2"
+tauri-plugin-http = { version = "2", features = ["unsafe-headers"] }
+reqwest = { version = "0.11", features = ["json"] }
+notify = "5.0"
+tokio = { version = "1", features = ["full"] }
+regex = "1"
+dirs = "5.0"
+tauri-plugin-sql = { version = "2", features = ["sqlite"] }
