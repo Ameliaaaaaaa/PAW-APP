@@ -1,5 +1,5 @@
 # PAW App
-This directory contains the desktop application for PAW (Puppy's Avatar World), a VRChat avatar database and search platform.
+This repository contains the desktop application for PAW (Puppy's Avatar World), a VRChat avatar database and search platform.
 
 ## Overview
 The application is built using Tauri and Next.js. It provides a native desktop experience for searching, browsing, and discovering VRChat avatars.  A key feature of the application is the ability to "force clone" avatars you have encountered directly from within the app.
@@ -12,8 +12,7 @@ The application is built using Tauri and Next.js. It provides a native desktop e
 
 ### Installation
 1.  Clone the PAW repository.
-2.  Navigate to the `App/` directory.
-3.  Install dependencies: `npm install` or `yarn install`
+2.  Install dependencies: `npm install` or `yarn install`
 
 ### Development
 1.  Start the development server: `npm run tauri dev` or `yarn tauri dev`
