@@ -1,4 +1,4 @@
-# PAW App ![Discord](https://img.shields.io/discord/1331153121472282652?color=%23512BD4&label=Discord&logo=discord&logoColor=white&style=flat)
+# PAW App [![Discord](https://img.shields.io/discord/1331153121472282652?color=%23512BD4&label=Discord&logo=discord&logoColor=white&style=flat)](https://discord.gg/zHhs4nQYxX)
 This repository contains the desktop application for PAW (Puppy's Avatar World), a VRChat avatar database and search platform.
 
 ## Overview
