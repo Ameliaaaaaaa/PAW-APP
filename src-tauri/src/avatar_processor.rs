@@ -14,6 +14,7 @@ const BASE_URL: &str = "https://paw-api.amelia.fun/";
 
 const MAX_CONCURRENT: usize = 3;
 
+#[derive(Clone)]
 pub struct AvatarProcessor {
     queue: Arc<Mutex<Vec<String>>>,
     is_processing: Arc<Mutex<bool>>,
@@ -28,15 +29,6 @@ impl AvatarProcessor {
             is_processing: Arc::new(Mutex::new(false)),
             client: Client::new(),
             successful_posts: Arc::new(Mutex::new(VecDeque::with_capacity(1000))),
-        }
-    }
-
-    pub fn clone(&self) -> Self {
-        AvatarProcessor {
-            queue: self.queue.clone(),
-            is_processing: self.is_processing.clone(),
-            client: self.client.clone(),
-            successful_posts: self.successful_posts.clone(),
         }
     }
 
