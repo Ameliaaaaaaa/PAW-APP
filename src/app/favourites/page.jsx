@@ -1,11 +1,10 @@
 'use client';
 
-import { useDatabase } from '@/context/database-context';
-
 export default function Favourites() {
     return (
         <div>
-            Hi
+            <UpdateTitle/>
+            WIP
         </div>
     );
 };

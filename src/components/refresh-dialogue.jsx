@@ -1,6 +1,5 @@
 'use client';
 
-import { error } from '@tauri-apps/plugin-log';
 import { useState } from 'react';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';

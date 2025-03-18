@@ -1,10 +1,12 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const CacheScannerContext = createContext(null);
 
-export function CacheScannerProvider({ children }) {};
+export function CacheScannerProvider({ children }) {
+    const [enabled, setEnabled] = useState(true);
+};
 
 export function useCacheScanner() {
     const context = useContext(CacheScannerContext);

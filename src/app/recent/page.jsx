@@ -12,7 +12,7 @@ export default function Recent() {
             <h1 className="text-4xl font-bold mb-8 text-center">VRChat Avatar Search</h1>
             <p className="text-center mb-8">Recently seen avatars</p>
             
-             <RecentAvatarsGrid />
+            <RecentAvatarsGrid />
         </div>
     );
 };

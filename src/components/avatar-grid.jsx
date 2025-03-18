@@ -142,7 +142,7 @@ export default function AvatarGrid() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.0.1'
+                    'User-Agent': 'PAW-APP/0.1.0'
                 }
             });
 

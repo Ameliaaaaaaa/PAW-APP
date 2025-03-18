@@ -5,13 +5,12 @@ import { format, differenceInDays } from 'date-fns';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RefreshDialog } from '@/components/refresh-dialogue';
 import { useVRChat } from '@/context/vrchat-context';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const ratings = {
     0: {
@@ -43,24 +42,23 @@ const ratings = {
 const PerformanceRating = ({ rating, platform }) => {
     const ratingValue = rating !== null ? rating : 0;
     const ratingData = ratings[ratingValue];
-
+  
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2">
-              <div 
-                className="w-6 h-6"
-                dangerouslySetInnerHTML={{ __html: ratingData.image }}
-              />
-              <span className="text-xs font-medium">{platform}</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className="font-medium">{platform} Performance: {ratingData.name}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div className="flex items-center gap-2 bg-muted/50 px-2 py-1 rounded-md">
+                        <div className="w-4 h-4" dangerouslySetInnerHTML={{ __html: ratingData.image }} />
+                        <span className="text-xs font-medium">{platform}</span>
+                    </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p className="font-medium">
+                        {platform} Performance: {ratingData.name}
+                    </p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
     );
 };
 
@@ -92,13 +90,13 @@ export default function AvatarCard({ avatar }) {
 
     return (
         <Card className="h-full overflow-hidden bg-card">
-            {isAvatarInfoOutdated(avatar.checked_at) && (
+            {/* {isAvatarInfoOutdated(avatar.checked_at) && (
                 <div className="bg-destructive/10 border-l-4 border-destructive p-2">
                     <p className="text-xs text-destructive">
                         Avatar information may be out of date. Last checked: {format(new Date(avatar.checked_at), 'yyyy-MM-dd')}
                     </p>
                 </div>
-            )}
+            )} */}
             <div className="relative aspect-video">
                 <img
                     src={avatar.thumbnail_url || '/placeholder.svg'}
@@ -168,19 +166,10 @@ export default function AvatarCard({ avatar }) {
                     )}
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-2">
-                    <PerformanceRating 
-                      rating={avatar.pc_rating} 
-                      platform="PC" 
-                    />
-                    <PerformanceRating 
-                      rating={avatar.quest_rating} 
-                      platform="Quest" 
-                    />
-                    <PerformanceRating 
-                      rating={avatar.ios_rating} 
-                      platform="iOS" 
-                    />
+                <div className="flex flex-wrap gap-2">
+                    <PerformanceRating rating={avatar.pc_rating} platform="PC" />
+                    <PerformanceRating rating={avatar.quest_rating} platform="Quest" />
+                    <PerformanceRating rating={avatar.ios_rating} platform="iOS" />
                 </div>
 
                 <div className="flex flex-col gap-2">

@@ -15,7 +15,7 @@ export function PAWProvider({ children }) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.0.1'
+                    'User-Agent': 'PAW-APP/0.1.0'
                 }
             });
         
@@ -40,7 +40,7 @@ export function PAWProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.0.1'
+                    'User-Agent': 'PAW-APP/0.1.0'
                 }
             });
 

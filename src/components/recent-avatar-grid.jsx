@@ -6,7 +6,6 @@ import { invoke } from '@tauri-apps/api/core';
 import { Loader2 } from 'lucide-react';
 
 import AvatarCard from '@/components/avatar-card';
-import { usePAW } from '@/context/paw-context';
 
 const AVATAR_CARD_WIDTH = 320;
 const AVATAR_CARD_HEIGHT = 550;
@@ -49,7 +48,7 @@ export default function RecentAvatarsGrid() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'User-Agent': 'PAW-APP/0.0.1'
+                'User-Agent': 'PAW-APP/0.1.0'
             }
         });
 

@@ -1,12 +1,11 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { CacheScannerProvider } from '@/context/cache-scanner-context';
-import { ThemeProvider } from '@/components/theme-provider';
-import { AppSidebar } from '@/components/sidebar';
-import { Toaster } from '@/components/ui/sonner';
-
 import { DatabaseProvider } from '@/context/database-context';
+import { ThemeProvider } from '@/components/theme-provider';
 import { VRChatProvider } from '@/context/vrchat-context';
 import { PAWProvider } from '@/context/paw-context';
+import { AppSidebar } from '@/components/sidebar';
+import { Toaster } from '@/components/ui/sonner';
 
 import './globals.css';
 

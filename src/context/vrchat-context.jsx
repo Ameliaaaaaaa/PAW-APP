@@ -9,6 +9,7 @@ const VRChatContext = createContext(null);
 
 export function VRChatProvider({ children }) {
     const [store, setStore] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
         const openStore = async () => {
@@ -24,7 +25,7 @@ export function VRChatProvider({ children }) {
         };
 
         openStore();
-    });
+    }, []);
 
     const authUser = async (username, password) => {
         try {
@@ -67,7 +68,7 @@ export function VRChatProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.0.1 ameliab20081@gmail.com',
+                    'User-Agent': 'PAW-APP/0.1.0 ameliab20081@gmail.com',
                     'Cookie': `${auth.authCookie};`
                 },
                 body: JSON.stringify({ 
@@ -86,6 +87,57 @@ export function VRChatProvider({ children }) {
             };
         }
     };
+    
+    const fetchUserInfo = async (authCookie) => {
+        try {
+            const response = await fetch('https://api.vrchat.cloud/api/1/auth/user', {
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'PAW-APP/0.1.0 ameliab20081@gmail.com',
+                    'Cookie': `${authCookie};`
+                }
+            });
+
+            const data = response.ok ? await response.json() : null;
+
+            if (response.ok) setCurrentUser(data);
+
+            return {
+                success: response.ok,
+                data: data
+            };
+        } catch (e) {
+            error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
+
+    const getUserInfo = async () => {
+        if (currentUser) return {
+            success: true,
+            data: currentUser
+        };
+    
+        try {
+            const store = await load('store.json', { 
+                autoSave: false
+            });
+
+            const auth = await store.get('auth');
+
+            if (auth && auth.authCookie) return await fetchUserInfo(auth.authCookie);
+        } catch (e) {
+            error(e);
+        }
+    
+        return {
+            success: false,
+            data: null
+        };
+    };
 
     const switchAvatar = async (avatarId) => {
         try {
@@ -94,7 +146,7 @@ export function VRChatProvider({ children }) {
             const response = await fetch(`https://api.vrchat.cloud/api/1/avatars/${avatarId}/select`, {
                 method: 'PUT',
                 headers: {
-                    'User-Agent': 'PAW-APP/0.0.1 ameliab20081@gmail.com',
+                    'User-Agent': 'PAW-APP/0.1.0 ameliab20081@gmail.com',
                     'Cookie': `${auth.authCookie};`
                 }
             });
@@ -111,12 +163,32 @@ export function VRChatProvider({ children }) {
         }
     };
 
+    const logout = async () => {
+        try {
+            setCurrentUser(null);
+        
+            await store.delete('auth');
+
+            return {
+                success: true
+            };
+        } catch(e) {
+            error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
+
     return (
         <VRChatContext.Provider
         value={{
             authUser,
             verify2fa,
-            switchAvatar
+            getUserInfo,
+            switchAvatar,
+            logout
         }}
         >
             {children}

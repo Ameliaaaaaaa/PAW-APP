@@ -1,105 +1,121 @@
 'use client';
 
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { LogIn, Lock, User } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useVRChat } from '@/context/vrchat-context';
+import { Button } from '@/components/ui/button';
 import TwoFAModal from '@/components/2fa-modal';
+import { Label } from '@/components/ui/label';
 
 export default function LoginPage() {
-    const [credentials, setCredentials] = useState({ username: '', password: '' });
-    const [is2FAModalOpen, setIs2FAModalOpen] = useState(false);
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [is2FAModalOpen, setIs2FAModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const { authUser, verify2fa } = useVRChat();
+  const { authUser, verify2fa } = useVRChat();
 
-    const handleLogin = async (event) => {
-        event.preventDefault();
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
 
-        const auth = await authUser(credentials.username, credentials.password);
+    const auth = await authUser(credentials.username, credentials.password);
 
-        if (auth.success) {
-            if (auth.twoFactorAuthType !== 'none') {
-                setIs2FAModalOpen(true);
-            } else {
-                toast('Logged in successfully!');
-            }
-        } else {
-            toast('Failed to log in.');
-        }
-    };
+    if (auth.success) {
+      if (auth.twoFactorAuthType !== 'none') {
+        setIs2FAModalOpen(true);
+      } else {
+        toast('Logged in successfully!');
+      }
+    } else {
+      toast('Failed to log in. Please check your credentials.');
+    }
 
-    const handle2FASubmit = async (code) => {
-        const verify = await verify2fa(code);
+    setIsLoading(false);
+  };
 
-        setIs2FAModalOpen(false);
+  const handle2FASubmit = async (code) => {
+    setIsLoading(true);
 
-        if (verify.success) {
-            toast('Logged in successfully!');
-        } else {
-            toast('Failed to log in.');
-        }
-    };
+    const verify = await verify2fa(code);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
+    setIs2FAModalOpen(false);
+
+    if (verify.success) {
+      toast('Logged in successfully!');
+    } else {
+      toast('Failed to verify 2FA code.');
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
         
-        setCredentials(prev => ({ ...prev, [name]: value }));
-    };
+    setCredentials(prev => ({ ...prev, [name]: value }));
+  };
 
-    return (
-        <div className="container mx-auto flex items-center justify-center min-h-[80vh]">
-            <div className="w-full max-w-md">
-                <h1 className="text-3xl font-bold text-center mb-8">Login</h1>
-                <UpdateTitle />
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                        <label htmlFor="username" className="block text-sm font-medium">Username</label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            value={credentials.username} 
-                            onChange={handleChange} 
-                            required 
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            value={credentials.password} 
-                            onChange={handleChange} 
-                            required 
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                    </div>
-                    <button 
-                        type="submit" 
-                        className="w-full p-2 bg-blue-500 text-white rounded"
-                    >
-                        Login
-                    </button>
-                </form>
-                {is2FAModalOpen && (
-                    <TwoFAModal 
-                        isOpen={is2FAModalOpen} 
-                        onClose={() => setIs2FAModalOpen(false)} 
-                        onSubmit={handle2FASubmit} 
-                    />
-                )}
+  return (
+    <div className="container mx-auto flex items-center justify-center min-h-[80vh]">
+      <UpdateTitle/>
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Login to VRChat</CardTitle>
+          <CardDescription className="text-center">
+            Enter your VRChat credentials to access certain avatar features
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input type="text" id="username" name="username" value={credentials.username} onChange={handleChange} required className="mt-1 block w-full border border-gray-300 rounded-md p-2"/>
+              </div>
             </div>
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input type="password" id="password" name="password" value={credentials.password} onChange={handleChange} required className="mt-1 block w-full border border-gray-300 rounded-md p-2"/>
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <span className="flex items-center">
+                   <span className="animate-spin mr-2">⏳</span> Logging in...
+                </span>
+              ) : (
+                <span className="flex items-center">
+                  <LogIn className="mr-2 h-4 w-4" /> Login
+                </span>
+              )}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex flex-col">
+          <p className="text-xs text-muted-foreground text-center mt-2">
+            Your credentials are stored locally and only used to access VRChat services.
+          </p>
+        </CardFooter>
+      </Card>
+
+      {is2FAModalOpen && (
+        <TwoFAModal onClose={() => setIs2FAModalOpen(false)} onSubmit={handle2FASubmit} isLoading={isLoading}/>
+      )}
+      </div>
     );
 };
 
 function UpdateTitle() {
-    try {
-        getCurrentWindow().setTitle('PAW ~ Login');
-    } catch (error) {};
+  try {
+    getCurrentWindow().setTitle('PAW ~ Login');
+  } catch (error) {};
 
-    return null;
+  return null;
 };
