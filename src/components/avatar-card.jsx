@@ -1,12 +1,14 @@
 'use client';
 
-import { Star, PersonStanding, Calendar } from 'lucide-react';
-import { format, differenceInDays } from 'date-fns';
-import { useState } from 'react';
+import { Star, PersonStanding, Calendar, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { RefreshDialog } from '@/components/refresh-dialogue';
+import { useDatabase } from '@/context/database-context';
+import { Separator } from '@/components/ui/separator';
 import { useVRChat } from '@/context/vrchat-context';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -64,14 +66,64 @@ const PerformanceRating = ({ rating, platform }) => {
 
 export default function AvatarCard({ avatar }) {
     const [isRefreshDialogOpen, setIsRefreshDialogOpen] = useState(false);
+    const [isFavoriteDialogOpen, setIsFavoriteDialogOpen] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [favoriteEntries, setFavoriteEntries] = useState([]);
 
     const { switchAvatar } = useVRChat();
+    const { getDatabase, getCategories, checkFavorite, favoriteAvatar, removeFromFavorites } = useDatabase();
 
-    const isAvatarInfoOutdated = (checkedAt) => {
-        const checkedDate = new Date(checkedAt);
-        const currentDate = new Date();
+    const loadCategories = async () => {
+        const categories = await getCategories();
 
-        return differenceInDays(currentDate, checkedDate) > 5;
+        setCategories(categories);
+
+        if (categories.length > 0) setSelectedCategoryId(categories[0].id);
+    };
+
+    const checkIfFavorite = async () => {
+        const result = await checkFavorite(avatar.id);
+
+        setFavoriteEntries(result);
+        setIsFavorite(result.length > 0);
+    };
+
+    useEffect(() => {
+        loadCategories();
+        checkIfFavorite();
+    }, [avatar.id]);
+
+    const addToFavorites = async (categoryId) => {
+        if (!categoryId) {
+            toast('Please select a category');
+
+            return;
+        }
+
+        const favorited = await favoriteAvatar(categoryId, avatar.id, JSON.stringify(avatar));
+
+        if (favorited.exists) {
+            toast('Avatar is already in this category.');
+            setIsFavoriteDialogOpen(false);
+
+            return;
+        }
+
+        if (favorited.success) {
+            setIsFavoriteDialogOpen(false);
+            await checkIfFavorite();
+            toast('Added to favorites.');
+        }
+    };
+
+    const unfavoriteAvatar = async () => {
+        await removeFromFavorites(avatar.id);
+        setIsFavoriteDialogOpen(false);
+        setIsFavorite(false);
+        setFavoriteEntries([]);
+        toast('Removed from favorites');
     };
 
     const formatDate = (dateString) => {
@@ -81,22 +133,11 @@ export default function AvatarCard({ avatar }) {
     const equipAvatar = async () => {
         const response = await switchAvatar(avatar.id);
 
-        if (response.success) {
-            toast('Avatar selected successfully!');
-        } else {
-            toast('Failed to select avatar.');
-        }
+        response.success ? toast('Avatar selected successfully!') : toast('Failed to select avatar.');
     };
 
     return (
         <Card className="h-full overflow-hidden bg-card">
-            {/* {isAvatarInfoOutdated(avatar.checked_at) && (
-                <div className="bg-destructive/10 border-l-4 border-destructive p-2">
-                    <p className="text-xs text-destructive">
-                        Avatar information may be out of date. Last checked: {format(new Date(avatar.checked_at), 'yyyy-MM-dd')}
-                    </p>
-                </div>
-            )} */}
             <div className="relative aspect-video">
                 <img
                     src={avatar.thumbnail_url || '/placeholder.svg'}
@@ -174,9 +215,15 @@ export default function AvatarCard({ avatar }) {
 
                 <div className="flex flex-col gap-2">
                     <div className="flex gap-2">
-                        <Button onClick={() => console.log('Favourite.')} className=" h-8" size="icon">
-                            <Star/>
-                        </Button>
+                        {isFavorite ? (
+                            <Button onClick={() => setIsFavoriteDialogOpen(true)} className="h-8" size="icon">
+                                <Star fill="gold" strokeWidth={1} />
+                            </Button>
+                        ) : (
+                            <Button onClick={() => setIsFavoriteDialogOpen(true)} className="h-8" size="icon">
+                                <Star />
+                            </Button>
+                        )}
                         <Button onClick={equipAvatar} className="flex-1 h-8 text-xs" size="sm">
                             <PersonStanding className="ml-1 h-3 w-3"/>Select Avatar
                         </Button>
@@ -186,11 +233,53 @@ export default function AvatarCard({ avatar }) {
                     </Button>
                 </div>
             </div>
-            <RefreshDialog
-                avatarId={avatar.id}
-                isOpen={isRefreshDialogOpen}
-                onClose={() => setIsRefreshDialogOpen(false)}
-            />
+            <RefreshDialog avatarId={avatar.id} isOpen={isRefreshDialogOpen} onClose={() => setIsRefreshDialogOpen(false)}/>
+            <Dialog open={isFavoriteDialogOpen} onOpenChange={setIsFavoriteDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{isFavorite ? 'Manage Favorite' : 'Add to Favorites'}</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                        {categories.length === 0 ? (
+                            <div className="text-center space-y-4">
+                                <p className="text-muted-foreground">No categories found. Please create a category first.</p>
+                                <Button onClick={() => {
+                                    setIsFavoriteDialogOpen(false)
+                                    window.location.href = "/favourites"
+                                }}>
+                                    Create Category
+                                </Button>
+                            </div>
+                        ) : (
+                        <div className="space-y-4">
+                            {isFavorite ? (
+                                <div className="space-y-2">
+                                    <p>This avatar is in your favorites. You can:</p>
+                                    <Button variant="destructive" className="w-full" onClick={unfavoriteAvatar}>
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Remove from all categories
+                                    </Button>
+                                    <Separator className="my-4" />
+                                    <p>Or add to another category:</p>
+                                </div>
+                            ) : (
+                                <p>Select a category to add this avatar to:</p>
+                            )}
+                            <div className="grid grid-cols-1 gap-2 max-h-[200px] overflow-y-auto">
+                                {categories.map((category) => (
+                                    <div key={category.id} className="p-2 border rounded-md cursor-pointer hover:bg-muted" onClick={() => {
+                                        setSelectedCategoryId(category.id)
+                                        addToFavorites(category.id)
+                                    }}>
+                                        {category.name}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+                </DialogContent>
+            </Dialog>
         </Card>
     );
 };

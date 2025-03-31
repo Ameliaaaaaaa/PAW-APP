@@ -5,6 +5,8 @@ import { load } from '@tauri-apps/plugin-store';
 import { fetch } from '@tauri-apps/plugin-http';
 import { error } from '@tauri-apps/plugin-log';
 
+const USER_AGENT = 'PAW-APP/0.2.0 ameliab20081@gmail.com';
+
 const VRChatContext = createContext(null);
 
 export function VRChatProvider({ children }) {
@@ -68,7 +70,7 @@ export function VRChatProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.1.0 ameliab20081@gmail.com',
+                    'User-Agent': USER_AGENT,
                     'Cookie': `${auth.authCookie};`
                 },
                 body: JSON.stringify({ 
@@ -93,7 +95,7 @@ export function VRChatProvider({ children }) {
             const response = await fetch('https://api.vrchat.cloud/api/1/auth/user', {
                 method: 'GET',
                 headers: {
-                    'User-Agent': 'PAW-APP/0.1.0 ameliab20081@gmail.com',
+                    'User-Agent': USER_AGENT,
                     'Cookie': `${authCookie};`
                 }
             });
@@ -146,7 +148,7 @@ export function VRChatProvider({ children }) {
             const response = await fetch(`https://api.vrchat.cloud/api/1/avatars/${avatarId}/select`, {
                 method: 'PUT',
                 headers: {
-                    'User-Agent': 'PAW-APP/0.1.0 ameliab20081@gmail.com',
+                    'User-Agent': USER_AGENT,
                     'Cookie': `${auth.authCookie};`
                 }
             });

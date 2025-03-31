@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Camera, Star, LogIn, LogOut, User } from 'lucide-react';
+import { Search, Star, LogIn, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -27,12 +27,8 @@ const mainItems = [{
     url: '/',
     icon: Search
 }, {
-    title: 'Recently Seen',
-    url: '/recent',
-    icon: Camera
-}, {
-    title: 'Favourites',
-    url: '/favourites',
+    title: 'Favorites',
+    url: '/favorites',
     icon: Star
 }];
 

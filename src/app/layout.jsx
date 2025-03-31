@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect } from 'react';
+
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { CacheScannerProvider } from '@/context/cache-scanner-context';
 import { DatabaseProvider } from '@/context/database-context';
@@ -9,12 +13,36 @@ import { Toaster } from '@/components/ui/sonner';
 
 import './globals.css';
 
-export const metadata = {};
-
 export default function RootLayout({ children }) {
+  const DisableMenu = () => {
+    if (typeof window === 'undefined') return;
+    if (window.location.hostname !== 'tauri.localhost') return;
+
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+
+      return false;
+    }, {
+      capture: true
+    });
+
+    document.addEventListener('selectstart', e => {
+      e.preventDefault();
+
+      return false;
+    }, {
+      capture: true
+    });
+  };
+
+  useEffect(() => {
+    DisableMenu();
+  }, []);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
+        <DisableMenu/>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <DatabaseProvider>
             <VRChatProvider>

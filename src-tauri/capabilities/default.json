@@ -28,6 +28,19 @@
     "sql:allow-close",
     "sql:allow-execute",
     "sql:allow-load",
-    "sql:allow-select"
+    "sql:allow-select",
+    "fs:default",
+    {
+      "identifier": "fs:allow-watch",
+      "allow": [{
+        "path": "$TEMP/**"
+      }]
+    },
+    {
+      "identifier": "fs:read-all",
+      "allow": [{
+        "path": "$TEMP/**"
+      }]
+    }
   ]
 }

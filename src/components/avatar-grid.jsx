@@ -38,7 +38,7 @@ export default function AvatarGrid() {
     const scrollListenerRef = useRef(null);
     const resizeObserverRef = useRef(null);
 
-    const { fetchStats } = usePAW();
+    const { fetchStats, searchAvatars } = usePAW();
 
     useEffect(() => {
         const container = containerRef.current;
@@ -128,37 +128,15 @@ export default function AvatarGrid() {
         setError(null);
 
         try {
-            const endpoint = currentSearchType === 'ai' ? 'https://paw-api.amelia.fun/ai-search' : 'https://paw-api.amelia.fun/search';
+            const response = await searchAvatars(currentSearchType, currentQuery, currentPlatforms.join(','), pageRef, currentOrderBy);
 
-            const response = await fetch(`${endpoint}?${new URLSearchParams({
-                ...(currentSearchType === 'ai' ? { prompt: currentQuery } : {
-                    type: currentSearchType,
-                    query: currentQuery
-                }),
-                platforms: currentPlatforms.join(','),
-                page: pageRef.current.toString(),
-                order: currentOrderBy
-            })}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.1.0'
-                }
-            });
+            if (!response.success) throw new Error(`Failed to fetch avatars.`);
 
-            if (!response.ok) {
-                const errorText = await response.text();
-
-                throw new Error(`Failed to fetch avatars: ${response.status} ${response.statusText}\n${errorText}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                setAvatars((prev) => [...prev, ...data.results]);
-                setHasNextPage(data.pagination.hasNextPage);
-                setTotalItems(data.pagination.totalCount);
-                setAllItemsLoaded(!data.pagination.hasNextPage);
+            if (response.data.success) {
+                setAvatars((prev) => [...prev, ...response.data.results]);
+                setHasNextPage(response.data.pagination.hasNextPage);
+                setTotalItems(response.data.pagination.totalCount);
+                setAllItemsLoaded(!response.data.pagination.hasNextPage);
 
                 pageRef.current += 1;
             } else {

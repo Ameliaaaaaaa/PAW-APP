@@ -1,6 +1,5 @@
 'use client';
 
-import { getCurrentWindow } from '@tauri-apps/api/window';
 import { LogIn, Lock, User } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -25,11 +24,7 @@ export default function LoginPage() {
     const auth = await authUser(credentials.username, credentials.password);
 
     if (auth.success) {
-      if (auth.twoFactorAuthType !== 'none') {
-        setIs2FAModalOpen(true);
-      } else {
-        toast('Logged in successfully!');
-      }
+      auth.twoFactorAuthType !== 'none' ? setIs2FAModalOpen(true) : toast('Logged in successfully!');
     } else {
       toast('Failed to log in. Please check your credentials.');
     }
@@ -44,11 +39,7 @@ export default function LoginPage() {
 
     setIs2FAModalOpen(false);
 
-    if (verify.success) {
-      toast('Logged in successfully!');
-    } else {
-      toast('Failed to verify 2FA code.');
-    }
+    verify.success ? toast('Logged in successfully!') : toast('Failed to verify 2FA code.');
 
     setIsLoading(false);
   };
@@ -112,10 +103,14 @@ export default function LoginPage() {
     );
 };
 
-function UpdateTitle() {
+const UpdateTitle = () => {
   try {
-    getCurrentWindow().setTitle('PAW ~ Login');
+    if (typeof window === 'undefined') return null;
+    
+    import('@tauri-apps/api/window').then((tauri) => {
+      tauri.getCurrentWindow().setTitle('PAW ~ Login');
+    });
   } catch (error) {};
-
+  
   return null;
 };

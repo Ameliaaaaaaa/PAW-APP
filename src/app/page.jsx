@@ -1,7 +1,5 @@
 'use client';
 
-import { getCurrentWindow } from '@tauri-apps/api/window';
-
 import AvatarGrid from '@/components/avatar-grid';
 
 export default function Home() {
@@ -17,10 +15,14 @@ export default function Home() {
     );
 };
 
-function UpdateTitle() {
+const UpdateTitle = () => {
     try {
-        getCurrentWindow().setTitle('PAW ~ Search Avatars');
+        if (typeof window === 'undefined') return null;
+      
+        import('@tauri-apps/api/window').then((tauri) => {
+            tauri.getCurrentWindow().setTitle('PAW ~ Search Avatars');
+        });
     } catch (error) {};
-
+    
     return null;
 };

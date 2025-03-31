@@ -5,6 +5,7 @@ import { fetch } from '@tauri-apps/plugin-http';
 import { error } from '@tauri-apps/plugin-log';
 
 const BASE_URL = 'https://paw-api.amelia.fun';
+const USER_AGENT = 'PAW-APP/0.2.0';
 
 const PAWContext = createContext(null);
 
@@ -15,7 +16,7 @@ export function PAWProvider({ children }) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.1.0'
+                    'User-Agent': USER_AGENT
                 }
             });
         
@@ -32,7 +33,34 @@ export function PAWProvider({ children }) {
         }
     };
 
-    const searchAvatars = async () => {};
+    const searchAvatars = async (type, query, platforms, pageRef, orderBy) => {
+        try {
+            const response = await fetch(`${BASE_URL}/search?${new URLSearchParams({
+                type: type,
+                query: query,
+                platforms: platforms,
+                page: pageRef.current.toString(),
+                order: orderBy
+            })}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': USER_AGENT
+                }
+            });
+        
+            return {
+                success: response.ok,
+                data: response.ok ? await response.json() : null
+            };
+        } catch (e) {
+            error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
 
     const refreshAvatar = async (avatarId) => {
         try {
@@ -40,7 +68,7 @@ export function PAWProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': 'PAW-APP/0.1.0'
+                    'User-Agent': USER_AGENT
                 }
             });
 

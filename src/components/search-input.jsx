@@ -49,10 +49,6 @@ export default function SearchInput({ onSearch }) {
                 </p>
             )}
 
-            <p className="text-sm text-red-500 text-center">
-                We are currently in the process of getting avatars added to the database.
-            </p>
-
             <p className="text-sm text-gray-500 mb-2 text-center">Select platforms (leaving empty will show all avatars):</p>
             <ToggleGroup type="multiple" value={currentPlatforms} onValueChange={handlePlatformToggle}>
                 <ToggleGroupItem value="pc" aria-label="PC">
