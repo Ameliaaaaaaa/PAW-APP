@@ -1,6 +1,8 @@
 'use client';
 
-import { Search, Star, LogIn, LogOut, User } from 'lucide-react';
+import { Search, Star, LogIn, LogOut, User, Download } from 'lucide-react';
+import { getVersion } from '@tauri-apps/api/app';
+import { open } from '@tauri-apps/plugin-shell';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -8,6 +10,7 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ToggleTheme } from '@/components/theme-toggle';
 import { useVRChat } from '@/context/vrchat-context';
+import { usePAW } from '@/context/paw-context';
 
 import {
     Sidebar as UISidebar,
@@ -34,18 +37,34 @@ const mainItems = [{
 
 export function AppSidebar() {
     const [user, setUser] = useState(null);
-
+    const [updateAvailable, setUpdateAvailable] = useState(false);
+    const [checking, setChecking] = useState(false);
+    const { getUserInfo, logout } = useVRChat();
+    const { fetchLatestVersion } = usePAW();
+    
     const pathname = usePathname();
 
-    const { getUserInfo, logout } = useVRChat();
-    
     useEffect(() => {
         const checkUserAuth = async () => {
             const userInfo = await getUserInfo();
 
             if (userInfo) setUser(userInfo.data);
         };
-    
+
+        const checkForUpdates = async () => {
+            setChecking(true);
+
+            const [version, currentVersion] = await Promise.all([
+                fetchLatestVersion(),
+                getVersion()
+            ]);
+
+            if (version.success) setUpdateAvailable(currentVersion !== version.version);
+
+            setChecking(false);
+        };
+
+        checkForUpdates();
         checkUserAuth();
     }, []);
 
@@ -135,29 +154,48 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className="border-t border-border p-4">
-        {user ? (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.presence.userIcon ? user.presence.userIcon : user.currentAvatarImageUrl} alt={user.displayName} />
-                <AvatarFallback>
-                  <User className="h-4 w-4" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">{user.displayName}</span>
-                <span className="text-xs text-muted-foreground">VRChat User</span>
-              </div>
-            </div>
-            <ToggleTheme />
-          </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">© {new Date().getFullYear()} PAW</div>
-            <ToggleTheme />
-          </div>
-        )}
-      </SidebarFooter>
+                {user ? (
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <Avatar className="h-8 w-8">
+                                    <AvatarImage src={user.presence.userIcon ? user.presence.userIcon : user.currentAvatarImageUrl} alt={user.displayName} />
+                                    <AvatarFallback>
+                                        <User className="h-4 w-4" />
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium">{user.displayName}</span>
+                                    <span className="text-xs text-muted-foreground">VRChat User</span>
+                                </div>
+                            </div>
+                            <ToggleTheme />
+                        </div>
+                            {updateAvailable && (
+                                <button onClick={() => open('https://github.com/Ameliaaaaaaa/PAW-APP/releases/latest')} className="flex items-center justify-between w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                    <div className="flex items-center gap-1">
+                                        <Download className="h-3 w-3" />
+                                        <span className="text-xs text-yellow-500">Update Available</span>
+                                    </div>
+                                </button>
+                            )}
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-between">
+                            <ToggleTheme />
+                        </div>
+                        {updateAvailable && (
+                            <button onClick={() => open('https://github.com/Ameliaaaaaaa/PAW-APP/releases/latest')} className="flex items-center justify-between w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <div className="flex items-center gap-1">
+                                    <Download className="h-3 w-3" />
+                                    <span className="text-xs text-yellow-500">Update Available</span>
+                                </div>
+                            </button>
+                        )}
+                    </div>
+                )}
+            </SidebarFooter>
             <SidebarRail />
         </UISidebar>
     );

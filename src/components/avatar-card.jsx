@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import AvatarInfoDialog from '@/components/avatar-info-dialogue';
 import { RefreshDialog } from '@/components/refresh-dialogue';
 import { useDatabase } from '@/context/database-context';
 import { Separator } from '@/components/ui/separator';
@@ -71,9 +72,10 @@ export default function AvatarCard({ avatar }) {
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const [isFavorite, setIsFavorite] = useState(false);
     const [favoriteEntries, setFavoriteEntries] = useState([]);
+    const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
 
     const { switchAvatar } = useVRChat();
-    const { getDatabase, getCategories, checkFavorite, favoriteAvatar, removeFromFavorites } = useDatabase();
+    const { getCategories, checkFavorite, favoriteAvatar, removeFromFavorites } = useDatabase();
 
     const loadCategories = async () => {
         const categories = await getCategories();
@@ -231,6 +233,9 @@ export default function AvatarCard({ avatar }) {
                     <Button onClick={() => setIsRefreshDialogOpen(true)} variant="secondary" className="w-full h-8 text-xs" size="sm">
                         Request Refresh
                     </Button>
+                    <Button onClick={() => setIsInfoDialogOpen(true)} variant="secondary" className="w-full h-8 text-xs" size="sm">
+                        More Info
+                    </Button>
                 </div>
             </div>
             <RefreshDialog avatarId={avatar.id} isOpen={isRefreshDialogOpen} onClose={() => setIsRefreshDialogOpen(false)}/>
@@ -280,6 +285,8 @@ export default function AvatarCard({ avatar }) {
                 </div>
                 </DialogContent>
             </Dialog>
+            
+            <AvatarInfoDialog avatarId={avatar.id} isOpen={isInfoDialogOpen} onClose={() => setIsInfoDialogOpen(false)} />
         </Card>
     );
 };

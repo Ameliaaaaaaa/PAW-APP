@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
     if (typeof window === 'undefined') return;
     if (window.location.hostname !== 'tauri.localhost') return;
 
-    document.addEventListener('contextmenu', e => {
+    document.addEventListener('contextmenu', (e) => {
       e.preventDefault();
 
       return false;
@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       capture: true
     });
 
-    document.addEventListener('selectstart', e => {
+    document.addEventListener('selectstart', (e) => {
       e.preventDefault();
 
       return false;
@@ -35,8 +35,18 @@ export default function RootLayout({ children }) {
     });
   };
 
+  const DisableRefresh = () => {
+    if (typeof window === 'undefined') return;
+    if (window.location.hostname !== 'tauri.localhost') return;
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) e.preventDefault();
+    });
+  };
+
   useEffect(() => {
     DisableMenu();
+    DisableRefresh();
   }, []);
 
   return (

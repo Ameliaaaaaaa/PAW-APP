@@ -47,6 +47,28 @@
     --input: 270 15% 15%;
     --ring: 339 90% 51%;
   }
+
+  .modstmous {
+    --background: 0 0% 0%;
+    --foreground: 40 100% 70%;
+    --card: 280 100% 15%;
+    --card-foreground: 40 100% 70%;
+    --popover: 280 100% 15%;
+    --popover-foreground: 40 100% 70%;
+    --primary: 290 100% 40%;
+    --primary-foreground: 40 100% 80%;
+    --secondary: 290 70% 20%;
+    --secondary-foreground: 40 100% 70%;
+    --muted: 290 70% 20%;
+    --muted-foreground: 40 70% 60%;
+    --accent: 290 100% 40%;
+    --accent-foreground: 40 100% 70%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 40 100% 70%;
+    --border: 290 70% 25%;
+    --input: 290 70% 25%;
+    --ring: 290 100% 40%;
+  }
 }
 
 @layer base {
@@ -58,59 +80,59 @@
   }
 }
 
-:root:not(.dark) {
+:root:not(.dark):not(.modstmous) {
   background-color: #f9eef9;
   color: #3d2f4b;
 }
 
-:root:not(.dark) .bg-background {
+:root:not(.dark):not(.modstmous) .bg-background {
   background-color: #f9eef9;
 }
 
-:root:not(.dark) .bg-card,
-:root:not(.dark) .bg-popover {
+:root:not(.dark):not(.modstmous) .bg-card,
+:root:not(.dark):not(.modstmous) .bg-popover {
   background-color: #ffffff;
 }
 
-:root:not(.dark) .bg-muted,
-:root:not(.dark) .bg-secondary {
+:root:not(.dark):not(.modstmous) .bg-muted,
+:root:not(.dark):not(.modstmous) .bg-secondary {
   background-color: #f5e8f5;
 }
 
-:root:not(.dark) .border-border {
+:root:not(.dark):not(.modstmous) .border-border {
   border-color: #e9d8e9;
 }
 
-:root:not(.dark) .bg-primary,
-:root:not(.dark) .text-primary {
+:root:not(.dark):not(.modstmous) .bg-primary,
+:root:not(.dark):not(.modstmous) .text-primary {
   background-color: #c93b7e;
   color: #ffffff;
 }
 
-:root:not(.dark) .bg-accent {
+:root:not(.dark):not(.modstmous) .bg-accent {
   background-color: #e05a9c;
 }
 
-:root:not(.dark) button[data-variant="default"] {
+:root:not(.dark):not(.modstmous) button[data-variant="default"] {
   background-color: #c93b7e;
   color: #ffffff;
 }
 
-:root:not(.dark) button[data-variant="outline"] {
+:root:not(.dark):not(.modstmous) button[data-variant="outline"] {
   border-color: #e9d8e9;
   background-color: transparent;
 }
 
-:root:not(.dark) button[data-variant="outline"]:hover {
+:root:not(.dark):not(.modstmous) button[data-variant="outline"]:hover {
   background-color: #f5e8f5;
 }
 
-:root:not(.dark) .card {
+:root:not(.dark):not(.modstmous) .card {
   background-color: #ffffff;
   border-color: #e9d8e9;
 }
 
-:root:not(.dark) .text-muted-foreground {
+:root:not(.dark):not(.modstmous) .text-muted-foreground {
   color: #7a6587;
 }
 
@@ -168,4 +190,193 @@
 
 .dark .text-muted-foreground {
   color: #a8a8b3;
+}
+
+.modstmous {
+  background-color: #000000;
+  color: #ffcc66;
+}
+
+.modstmous .bg-background {
+  background-color: #000000;
+}
+
+.modstmous .bg-card,
+.modstmous .bg-popover {
+  background-color: #2a0044;
+}
+
+.modstmous .bg-muted,
+.modstmous .bg-secondary {
+  background-color: #3a0066;
+}
+
+.modstmous .border-border {
+  border-color: #4a0088;
+}
+
+.modstmous .bg-primary,
+.modstmous .text-primary {
+  background-color: #8800cc;
+  color: #ffcc66;
+}
+
+.modstmous .bg-accent {
+  background-color: #aa00ff;
+}
+
+.modstmous button[data-variant="default"] {
+  background-color: #8800cc;
+  color: #ffcc66;
+}
+
+.modstmous button[data-variant="outline"] {
+  border-color: #4a0088;
+  background-color: transparent;
+  color: #ffcc66;
+}
+
+.modstmous button[data-variant="outline"]:hover {
+  background-color: #3a0066;
+}
+
+.modstmous .card {
+  background-color: #2a0044;
+  border-color: #4a0088;
+}
+
+.modstmous .text-muted-foreground {
+  color: #cc9933;
+}
+
+.modstmous .sidebar {
+  background-color: #0a0015;
+  border-color: #4a0088;
+}
+
+.modstmous .sidebar-header {
+  background-color: #0a0015;
+  border-color: #4a0088;
+}
+
+.modstmous .sidebar-menu-button[data-active="true"] {
+  background-color: #3a0066;
+}
+
+.modstmous .badge {
+  background-color: #8800cc;
+  color: #ffcc66;
+}
+
+.modstmous input,
+.modstmous select,
+.modstmous textarea {
+  background-color: #1a0033;
+  border-color: #4a0088;
+  color: #ffcc66;
+}
+
+.modstmous input::placeholder {
+  color: #aa7744;
+}
+
+.modstmous .dropdown-menu {
+  background-color: #2a0044;
+  border-color: #4a0088;
+}
+
+.modstmous .avatar-card {
+  background-color: #2a0044;
+  border-color: #4a0088;
+}
+
+.modstmous .performance-rating {
+  background-color: #3a0066;
+}
+
+.modstmous .sidebar-rail {
+  background-color: #0a0015;
+  border-color: #4a0088;
+}
+
+.modstmous .sidebar-content {
+  background-color: #0a0015;
+}
+
+.modstmous .sidebar-footer {
+  background-color: #0a0015;
+  border-color: #4a0088;
+}
+
+.modstmous .sidebar-group-content {
+  background-color: #0a0015;
+}
+
+.modstmous .sidebar-menu {
+  background-color: #0a0015;
+}
+
+.modstmous .sidebar-menu-item {
+  color: #ffcc66;
+}
+
+.modstmous .sidebar-menu-button:hover {
+  background-color: #3a0066;
+}
+
+.modstmous .header {
+  background-color: #0a0015;
+  border-color: #4a0088;
+}
+
+.modstmous .search-input {
+  background-color: #1a0033;
+}
+
+.modstmous .tab {
+  color: #ffcc66;
+}
+
+.modstmous .tab[data-state="active"] {
+  color: #ffcc66;
+  border-color: #8800cc;
+}
+
+.modstmous .checkbox {
+  border-color: #4a0088;
+}
+
+.modstmous .checkbox[data-state="checked"] {
+  background-color: #8800cc;
+  border-color: #8800cc;
+}
+
+.modstmous .dialog-content {
+  background-color: #2a0044;
+  border-color: #4a0088;
+}
+
+.modstmous .tooltip-content {
+  background-color: #2a0044;
+  border-color: #4a0088;
+  color: #ffcc66;
+}
+
+.modstmous .avatar-image {
+  border-color: #4a0088;
+}
+
+.modstmous .platform-badge {
+  background-color: #3a0066;
+  color: #ffcc66;
+}
+
+.modstmous .platform-badge[data-compatible="true"] {
+  background-color: #006600;
+  color: #ffcc66;
+}
+
+.modstmous .platform-badge[data-compatible="false"] {
+  background-color: #660000;
+  color: #ffcc66;
 }

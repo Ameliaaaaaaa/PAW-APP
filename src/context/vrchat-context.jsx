@@ -165,6 +165,33 @@ export function VRChatProvider({ children }) {
         }
     };
 
+    const getAvatar = async (avatarId) => {
+        try {
+            const auth = await store.get('auth');
+
+            const response = await fetch(`https://api.vrchat.cloud/api/1/avatars/${avatarId}`, {
+                method: 'GET',
+                headers: {
+                    'User-Agent': USER_AGENT,
+                    'Cookie': `${auth.authCookie};`
+                }
+            });
+    
+            const data = response.ok ? await response.json() : null;
+
+            return {
+                success: response.ok,
+                data: data
+            };
+        } catch (e) {
+            error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
+
     const logout = async () => {
         try {
             setCurrentUser(null);
@@ -190,6 +217,7 @@ export function VRChatProvider({ children }) {
             verify2fa,
             getUserInfo,
             switchAvatar,
+            getAvatar,
             logout
         }}
         >

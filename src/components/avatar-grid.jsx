@@ -10,7 +10,7 @@ import AvatarCard from '@/components/avatar-card';
 import { usePAW } from '@/context/paw-context';
 
 const AVATAR_CARD_WIDTH = 320;
-const AVATAR_CARD_HEIGHT = 550;
+const AVATAR_CARD_HEIGHT = 590;
 const GRID_GAP = 20;
 
 export default function AvatarGrid() {

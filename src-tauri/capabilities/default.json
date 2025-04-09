@@ -12,17 +12,15 @@
     "store:default",
     {
       "identifier": "http:default",
-      "allow": [
-        {
-          "url": "https://api.vrchat.cloud"
-        },
-        {
-          "url": "https://vrchat.com"
-        },
-        {
-          "url": "https://paw-api.amelia.fun"
-        }
-      ]
+      "allow": [{
+        "url": "https://api.vrchat.cloud"
+      }, {
+        "url": "https://vrchat.com"
+      }, {
+        "url": "https://paw-api.amelia.fun"
+      }, {
+        "url": "https://api.github.com"
+      }]
     },
     "log:default",
     "sql:allow-close",
@@ -32,15 +30,30 @@
     "fs:default",
     {
       "identifier": "fs:allow-watch",
-      "allow": [{
-        "path": "$TEMP/**"
-      }]
+      "allow": [
+        {
+          "path": "$TEMP/**"
+        }
+      ]
     },
     {
       "identifier": "fs:read-all",
-      "allow": [{
-        "path": "$TEMP/**"
-      }]
-    }
+      "allow": [
+        {
+          "path": "$TEMP/**"
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "open-github-repository",
+          "cmd": "open",
+          "args": "open: ^https://github.com/Ameliaaaaaaa/PAW-APP/releases/latest"
+        }
+      ]
+    },
+    "shell:default"
   ]
 }
