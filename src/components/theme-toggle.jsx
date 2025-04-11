@@ -1,6 +1,7 @@
 'use client';
 
 import { MoonIcon, SunIcon, StarIcon } from '@radix-ui/react-icons';
+import { PawPrint } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import * as React from 'react';
 
@@ -8,15 +9,16 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '@/components/ui/button';
 
 export function ToggleTheme() {
-    const { setTheme } = useTheme();
+    const { theme, setTheme } = useTheme();
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">
-                    <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <StarIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all modstmous:rotate-0 modstmous:scale-100" />
+                    {theme === 'light' && <SunIcon className="h-[1.2rem] w-[1.2rem]" />}
+                    {theme === 'dark' && <MoonIcon className="h-[1.2rem] w-[1.2rem]" />}
+                    {theme === 'modstmous' && <StarIcon className="h-[1.2rem] w-[1.2rem]" />}
+                    {theme === 'puppyDark' && <PawPrint className="h-[1.2rem] w-[1.2rem]" />}
                     <span className="sr-only">Toggle theme</span>
                 </Button>
             </DropdownMenuTrigger>
@@ -30,8 +32,8 @@ export function ToggleTheme() {
                 <DropdownMenuItem onClick={() => setTheme('modstmous')}>
                     Modstmous
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>
-                    System
+                <DropdownMenuItem onClick={() => setTheme('puppyDark')}>
+                    Subby_Puppy
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

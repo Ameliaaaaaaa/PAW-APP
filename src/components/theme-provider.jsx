@@ -11,7 +11,7 @@ const ThemeContext = createContext({
 export const useThemeContext = () => useContext(ThemeContext);
 
 export function ThemeProvider({ children, ...props }) {
-    const [theme, setTheme] = useState('system');
+    const [theme, setTheme] = useState('dark');
   
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
@@ -21,7 +21,7 @@ export function ThemeProvider({ children, ...props }) {
   
     return (
         <ThemeContext.Provider value={{ theme, setTheme }}>
-            <NextThemesProvider {...props} attribute="class" defaultTheme="system" enableSystem value={{ light: "light", dark: "dark", modstmous: "modstmous" }}>
+            <NextThemesProvider {...props} attribute="class" defaultTheme="dark" enableSystem value={{ light: 'light', dark: 'dark', modstmous: 'modstmous', puppyDark: 'puppyDark' }}>
                 {children}
             </NextThemesProvider>
         </ThemeContext.Provider>

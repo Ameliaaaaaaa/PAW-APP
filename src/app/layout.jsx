@@ -27,8 +27,11 @@ export default function RootLayout({ children }) {
     });
 
     document.addEventListener('selectstart', (e) => {
-      e.preventDefault();
+      const targetElement = e.target;
 
+      if (targetElement.tagName === 'INPUT' || targetElement.tagName === 'TEXTAREA' || targetElement.isContentEditable) return true;
+    
+      e.preventDefault();
       return false;
     }, {
       capture: true
@@ -40,6 +43,12 @@ export default function RootLayout({ children }) {
     if (window.location.hostname !== 'tauri.localhost') return;
 
     document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+        const targetElement = e.target;
+        
+        if (targetElement.tagName === 'INPUT' || targetElement.tagName === 'TEXTAREA' || targetElement.isContentEditable) return true;
+      }
+  
       if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) e.preventDefault();
     });
   };
@@ -57,23 +66,24 @@ export default function RootLayout({ children }) {
           <DatabaseProvider>
             <VRChatProvider>
               <PAWProvider>
-                <SidebarProvider>
-                  <AppSidebar />
-                  <SidebarInset>
-                    <div className="flex min-h-screen flex-col">
-                      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
-                        <SidebarTrigger />
-                        <div className="flex-1">
-                          <h1 className="text-xl font-semibold">VRChat Avatar Search</h1>
-                        </div>
-                      </header>
-                      <main className="flex-1 p-6">
-                        {children}
-                      </main>
-                    </div>
-                  </SidebarInset>
-                </SidebarProvider>
-                <CacheScannerProvider/>
+                <CacheScannerProvider>
+                  <SidebarProvider>
+                    <AppSidebar />
+                    <SidebarInset>
+                      <div className="flex min-h-screen flex-col">
+                        <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
+                          <SidebarTrigger />
+                          <div className="flex-1">
+                            <h1 className="text-xl font-semibold">VRChat Avatar Search</h1>
+                          </div>
+                        </header>
+                        <main className="flex-1 p-6">
+                          {children}
+                        </main>
+                      </div>
+                    </SidebarInset>
+                  </SidebarProvider>
+                </CacheScannerProvider>
                 <Toaster />
               </PAWProvider>
             </VRChatProvider>

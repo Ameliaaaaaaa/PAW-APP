@@ -1,22 +1,32 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { getVersion } from '@tauri-apps/api/app';
 import { fetch } from '@tauri-apps/plugin-http';
 import { error } from '@tauri-apps/plugin-log';
 
 const BASE_URL = 'https://paw-api.amelia.fun';
-const USER_AGENT = 'PAW-APP/0.2.0';
 
 const PAWContext = createContext(null);
 
 export function PAWProvider({ children }) {
+    const [currentVersion, setCurrentVersion] = useState('0.0.0');
+
+    useEffect(() => {
+        const setVersion = async () => {
+            setCurrentVersion(await getVersion());
+        };
+
+        setVersion();
+    }, []);
+
     const fetchLatestVersion = async () => {
         try {
             const response = await fetch('https://api.github.com/repos/Ameliaaaaaaa/PAW-APP/releases/latest', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': USER_AGENT
+                    'User-Agent': `PAW-APP/${currentVersion}`
                 }
             });
 
@@ -39,7 +49,7 @@ export function PAWProvider({ children }) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': USER_AGENT
+                    'User-Agent': `PAW-APP/${currentVersion}`
                 }
             });
         
@@ -68,7 +78,7 @@ export function PAWProvider({ children }) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': USER_AGENT
+                    'User-Agent': `PAW-APP/${currentVersion}`
                 }
             });
         
@@ -91,12 +101,35 @@ export function PAWProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': USER_AGENT
+                    'User-Agent': `PAW-APP/${currentVersion}`
                 }
             });
 
             return {
                 success: response.ok
+            };
+        } catch (e) {
+            error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
+
+    const fetchAvatar = async (avatarId) => {
+        try {
+            const response = await fetch(`${BASE_URL}/avatar?avatarId=${avatarId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': `PAW-APP/${currentVersion}`
+                }
+            });
+
+            return {
+                success: response.ok,
+                result: response.ok ? (await response.json()).result : null
             };
         } catch (e) {
             error(e);
@@ -113,7 +146,8 @@ export function PAWProvider({ children }) {
             fetchLatestVersion,
             fetchStats,
             searchAvatars,
-            refreshAvatar
+            refreshAvatar,
+            fetchAvatar
         }}
         >
             {children}

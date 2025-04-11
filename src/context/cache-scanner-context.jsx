@@ -2,10 +2,10 @@
 
 import { watchImmediate, BaseDirectory, readTextFile } from '@tauri-apps/plugin-fs';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { getVersion } from '@tauri-apps/api/app';
 import { error } from '@tauri-apps/plugin-log';
 
 const BASE_URL = 'https://paw-api.amelia.fun';
-const USER_AGENT = 'PAW-APP/0.2.0';
 const MAX_CONCURRENT_REQUESTS = 3;
 
 const CacheScannerContext = createContext(null);
@@ -16,6 +16,7 @@ export function CacheScannerProvider({ children }) {
     const [processedIds, setProcessedIds] = useState([]);
     const [processingIds, setProcessingIds] = useState([]);
     const [activeRequests, setActiveRequests] = useState(0);
+    const [currentVersion, setCurrentVersion] = useState('0.0.0');
 
     const processId = async (id) => {
         if (!id || processingIds.includes(id)) return;
@@ -25,7 +26,9 @@ export function CacheScannerProvider({ children }) {
         
         try {
             await sendToApi(id);
-            setProcessedIds(prev => [...prev, id]);
+
+            if (!processedIds.includes(id)) setProcessedIds(prev => [...prev, id]);
+            
             setPendingIds(prev => prev.filter(pendingId => pendingId !== id));
         } catch (e) {
             error(e);
@@ -41,7 +44,7 @@ export function CacheScannerProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': USER_AGENT
+                    'User-Agent': `PAW-APP/${currentVersion}`
                 }
             });
 
@@ -76,6 +79,8 @@ export function CacheScannerProvider({ children }) {
 
     useEffect(() => {
         const watchAmplitude = async () => {
+            setCurrentVersion(await getVersion());
+
             await watchImmediate('VRChat/VRChat', async (event) => {
                 const path = event.paths[0];
 
@@ -107,7 +112,8 @@ export function CacheScannerProvider({ children }) {
         value={{
             pendingCount: pendingIds.length,
             processingCount: processingIds.length,
-            processedCount: processedIds.length
+            processedCount: processedIds.length,
+            processedIds: processedIds
         }}
         >
             {children}

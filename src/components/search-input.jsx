@@ -33,8 +33,11 @@ export default function SearchInput({ onSearch }) {
                 <ToggleGroupItem value="description" aria-label="Search by description">
                     Description
                 </ToggleGroupItem>
-                <ToggleGroupItem value="author" aria-label="Search by author">
+                <ToggleGroupItem value="author" aria-label="Search by author id">
                     Author ID
+                </ToggleGroupItem>
+                <ToggleGroupItem value="author_name" aria-label="Search by author name">
+                    Author Name
                 </ToggleGroupItem>
                 <ToggleGroupItem disabled value="ai" aria-label="AI Search" className="relative">
                     <Sparkles className="mr-2 h-4 w-4"/>

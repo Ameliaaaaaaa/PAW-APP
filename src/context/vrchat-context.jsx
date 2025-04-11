@@ -1,20 +1,22 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { getVersion } from '@tauri-apps/api/app';
 import { load } from '@tauri-apps/plugin-store';
 import { fetch } from '@tauri-apps/plugin-http';
 import { error } from '@tauri-apps/plugin-log';
-
-const USER_AGENT = 'PAW-APP/0.2.0 ameliab20081@gmail.com';
 
 const VRChatContext = createContext(null);
 
 export function VRChatProvider({ children }) {
     const [store, setStore] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+    const [currentVersion, setCurrentVersion] = useState('0.0.0');
 
     useEffect(() => {
         const openStore = async () => {
+            setCurrentVersion(await getVersion());
+
             try {
                 const store = await load('store.json', { 
                     autoSave: true
@@ -70,7 +72,7 @@ export function VRChatProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': USER_AGENT,
+                    'User-Agent': `PAW-APP/${currentVersion} ameliab20081@gmail.com`,
                     'Cookie': `${auth.authCookie};`
                 },
                 body: JSON.stringify({ 
@@ -95,7 +97,7 @@ export function VRChatProvider({ children }) {
             const response = await fetch('https://api.vrchat.cloud/api/1/auth/user', {
                 method: 'GET',
                 headers: {
-                    'User-Agent': USER_AGENT,
+                    'User-Agent': `PAW-APP/${currentVersion} ameliab20081@gmail.com`,
                     'Cookie': `${authCookie};`
                 }
             });
@@ -148,7 +150,7 @@ export function VRChatProvider({ children }) {
             const response = await fetch(`https://api.vrchat.cloud/api/1/avatars/${avatarId}/select`, {
                 method: 'PUT',
                 headers: {
-                    'User-Agent': USER_AGENT,
+                    'User-Agent': `PAW-APP/${currentVersion} ameliab20081@gmail.com`,
                     'Cookie': `${auth.authCookie};`
                 }
             });
@@ -172,7 +174,7 @@ export function VRChatProvider({ children }) {
             const response = await fetch(`https://api.vrchat.cloud/api/1/avatars/${avatarId}`, {
                 method: 'GET',
                 headers: {
-                    'User-Agent': USER_AGENT,
+                    'User-Agent': `PAW-APP/${currentVersion} ameliab20081@gmail.com`,
                     'Cookie': `${auth.authCookie};`
                 }
             });
