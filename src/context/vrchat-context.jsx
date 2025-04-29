@@ -194,6 +194,33 @@ export function VRChatProvider({ children }) {
         }
     };
 
+    const getUser = async (userId) => {
+        try {
+            const auth = await store.get('auth');
+
+            const response = await fetch(`https://api.vrchat.cloud/api/1/users/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'User-Agent': `PAW-APP/${currentVersion} ameliab20081@gmail.com`,
+                    'Cookie': `${auth.authCookie};`
+                }
+            });
+    
+            const data = response.ok ? await response.json() : null;
+
+            return {
+                success: response.ok,
+                data: data
+            };
+        } catch (e) {
+            error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
+
     const logout = async () => {
         try {
             setCurrentUser(null);
@@ -215,11 +242,13 @@ export function VRChatProvider({ children }) {
     return (
         <VRChatContext.Provider
         value={{
+            currentUser,
             authUser,
             verify2fa,
             getUserInfo,
             switchAvatar,
             getAvatar,
+            getUser,
             logout
         }}
         >

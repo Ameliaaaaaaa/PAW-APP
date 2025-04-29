@@ -74,7 +74,7 @@ export default function AvatarCard({ avatar }) {
     const [favoriteEntries, setFavoriteEntries] = useState([]);
     const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
 
-    const { switchAvatar } = useVRChat();
+    const { currentUser, switchAvatar } = useVRChat();
     const { getCategories, checkFavorite, favoriteAvatar, removeFromFavorites } = useDatabase();
 
     const loadCategories = async () => {
@@ -226,8 +226,8 @@ export default function AvatarCard({ avatar }) {
                                 <Star />
                             </Button>
                         )}
-                        <Button onClick={equipAvatar} className="flex-1 h-8 text-xs" size="sm">
-                            <PersonStanding className="ml-1 h-3 w-3"/>Select Avatar
+                        <Button disabled={currentUser === null} onClick={equipAvatar} className="flex-1 h-8 text-xs" size="sm">
+                            <PersonStanding className="ml-1 h-3 w-3"/>{currentUser ? 'Select Avatar' : 'Please Log In'}
                         </Button>
                     </div>
                     <Button onClick={() => setIsRefreshDialogOpen(true)} variant="secondary" className="w-full h-8 text-xs" size="sm">

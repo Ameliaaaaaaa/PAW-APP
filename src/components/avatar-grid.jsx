@@ -211,7 +211,7 @@ export default function AvatarGrid() {
                 stats && (
                     <Card className="mb-6">
                         <CardContent className="pt-6">
-                            <div className="grid grid-cols-2 gap-4 text-center">
+                            <div className="grid grid-cols-4 gap-4 text-center">
                                 <div>
                                     <p className="text-2xl font-bold">{Number(stats.users).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
                                     <p className="text-sm text-gray-500">Users</p>
@@ -219,6 +219,14 @@ export default function AvatarGrid() {
                                 <div>
                                     <p className="text-2xl font-bold">{Number(stats.avatars).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
                                     <p className="text-sm text-gray-500">Avatars</p>
+                                </div>
+                                <div>
+                                    <p className="text-2xl font-bold">{Number(stats.queue.priority['1'] + stats.queue.priority['2']).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+                                    <p className="text-sm text-gray-500">Avatars Queued</p>
+                                </div>
+                                <div>
+                                    <p className="text-2xl font-bold">{Number(stats.queue.active).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+                                    <p className="text-sm text-gray-500">Avatars Processing</p>
                                 </div>
                             </div>
                         </CardContent>
