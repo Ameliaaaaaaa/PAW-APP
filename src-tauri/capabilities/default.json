@@ -12,15 +12,20 @@
     "store:default",
     {
       "identifier": "http:default",
-      "allow": [{
-        "url": "https://api.vrchat.cloud"
-      }, {
-        "url": "https://vrchat.com"
-      }, {
-        "url": "https://paw-api.amelia.fun"
-      }, {
-        "url": "https://api.github.com"
-      }]
+      "allow": [
+        {
+          "url": "https://api.vrchat.cloud"
+        },
+        {
+          "url": "https://vrchat.com"
+        },
+        {
+          "url": "https://paw-api.amelia.fun"
+        },
+        {
+          "url": "https://api.github.com"
+        }
+      ]
     },
     "log:default",
     "sql:allow-close",
@@ -29,7 +34,7 @@
     "sql:allow-select",
     "fs:default",
     {
-      "identifier": "fs:allow-watch",
+      "identifier": "fs:read-all",
       "allow": [
         {
           "path": "$TEMP/**"
@@ -37,7 +42,7 @@
       ]
     },
     {
-      "identifier": "fs:read-all",
+      "identifier": "fs:allow-watch",
       "allow": [
         {
           "path": "$TEMP/**"
