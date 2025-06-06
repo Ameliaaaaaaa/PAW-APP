@@ -12,7 +12,7 @@ import AvatarCard from '@/components/avatar-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export default function Favorites() {
+export default function Page() {
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [favorites, setFavorites] = useState([]);

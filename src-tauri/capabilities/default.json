@@ -50,6 +50,78 @@
       ]
     },
     {
+      "identifier": "fs:allow-home-read-recursive",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-home-write-recursive",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-home-read",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-home-write",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-home-meta-recursive",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-home-meta",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:scope-home-recursive",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:scope-appdata",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:scope-home-index",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    {
       "identifier": "shell:allow-execute",
       "allow": [
         {

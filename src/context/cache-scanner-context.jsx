@@ -1,7 +1,7 @@
 'use client';
 
 import { watchImmediate, BaseDirectory, readTextFile } from '@tauri-apps/plugin-fs';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useReducer } from 'react';
 import { getVersion } from '@tauri-apps/api/app';
 import { error } from '@tauri-apps/plugin-log';
 
@@ -10,31 +10,63 @@ const MAX_CONCURRENT_REQUESTS = 3;
 
 const CacheScannerContext = createContext(null);
 
+const cacheReducer = (state, action) => {
+    switch (action.type) {
+        case 'ADD_PENDING_IDS': {
+            const dedupedNewIds = [...new Set(action.ids)];
+            const uniqueNewIds = dedupedNewIds.filter(id => !state.processedIds.includes(id) && !state.pendingIds.includes(id) && !state.processingIds.includes(id));
+            
+            return {
+                ...state,
+                pendingIds: [...state.pendingIds, ...uniqueNewIds]
+            };
+        }
+
+        case 'START_PROCESSING': {
+            return {
+                ...state,
+                activeRequests: state.activeRequests + 1,
+                processingIds: [...state.processingIds, action.id]
+            };
+        }
+
+        case 'FINISH_PROCESSING': {
+            return {
+                ...state,
+                activeRequests: state.activeRequests - 1,
+                processingIds: state.processingIds.filter(id => id !== action.id),
+                processedIds: state.processedIds.includes(action.id) ? state.processedIds : [...state.processedIds, action.id], pendingIds: state.pendingIds.filter(id => id !== action.id)
+            };
+        }
+
+        default:
+            return state;
+    }
+};
+
 export function CacheScannerProvider({ children }) {
     const [enabled, setEnabled] = useState(true);
-    const [pendingIds, setPendingIds] = useState([]);
-    const [processedIds, setProcessedIds] = useState([]);
-    const [processingIds, setProcessingIds] = useState([]);
-    const [activeRequests, setActiveRequests] = useState(0);
+
+    const [state, dispatch] = useReducer(cacheReducer, {
+        pendingIds: [],
+        processedIds: [],
+        processingIds: [],
+        activeRequests: 0
+    });
+
     const [currentVersion, setCurrentVersion] = useState('0.0.0');
 
     const processId = async (id) => {
-        if (!id || processingIds.includes(id)) return;
-        
-        setProcessingIds(prev => [...prev, id]);
-        setActiveRequests(prev => prev + 1);
-        
+        if (!id || state.processingIds.includes(id)) return;
+    
+        dispatch({ type: 'START_PROCESSING', id });
+    
         try {
             await sendToApi(id);
-
-            if (!processedIds.includes(id)) setProcessedIds(prev => [...prev, id]);
-            
-            setPendingIds(prev => prev.filter(pendingId => pendingId !== id));
         } catch (e) {
             error(e);
         } finally {
-            setProcessingIds(prev => prev.filter(processingId => processingId !== id));
-            setActiveRequests(prev => prev - 1);
+            dispatch({ type: 'FINISH_PROCESSING', id });
         }
     };
 
@@ -56,26 +88,24 @@ export function CacheScannerProvider({ children }) {
 
     const addToPendingIds = (newIds) => {
         if (!newIds || newIds.length === 0) return;
-        
-        const uniqueNewIds = newIds.filter(id => !processedIds.includes(id) && !pendingIds.includes(id) && !processingIds.includes(id));
-        
-        if (uniqueNewIds.length > 0) setPendingIds(prev => [...prev, ...uniqueNewIds]);
+
+        dispatch({ type: 'ADD_PENDING_IDS', ids: newIds });
     };
 
     useEffect(() => {
         const processNextBatch = async () => {
-            if (activeRequests >= MAX_CONCURRENT_REQUESTS || pendingIds.length === 0) return;
-            
-            const availableSlots = MAX_CONCURRENT_REQUESTS - activeRequests;
-            const idsToProcess = pendingIds.slice(0, availableSlots);
-            
+            if (state.activeRequests >= MAX_CONCURRENT_REQUESTS || state.pendingIds.length === 0) return;
+    
+            const availableSlots = MAX_CONCURRENT_REQUESTS - state.activeRequests;
+            const idsToProcess = state.pendingIds.slice(0, availableSlots);
+    
             idsToProcess.forEach(id => {
                 processId(id);
             });
         };
-        
+    
         processNextBatch();
-    }, [pendingIds, activeRequests, processingIds]);
+    }, [state.pendingIds, state.activeRequests, state.processingIds]);
 
     useEffect(() => {
         const watchAmplitude = async () => {
@@ -110,10 +140,11 @@ export function CacheScannerProvider({ children }) {
     return (
         <CacheScannerContext.Provider
         value={{
-            pendingCount: pendingIds.length,
-            processingCount: processingIds.length,
-            processedCount: processedIds.length,
-            processedIds: processedIds
+            addToPendingIds,
+            pendingCount: state.pendingIds.length,
+            processingCount: state.processingIds.length,
+            processedCount: state.processedIds.length,
+            processedIds: state.processedIds
         }}
         >
             {children}

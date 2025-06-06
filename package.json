@@ -1,7 +1,7 @@
 {
   "name": "App",
   "description": "The app counterpart of PAW created using Tauri.",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "homepage": "https://paw.amelia.fun",
   "repository": "https://github.com/Ameliaaaaaaa/PAW-APP",
   "author": "Amelia",

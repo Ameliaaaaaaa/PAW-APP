@@ -1,6 +1,6 @@
 [package]
 name = "PAW"
-version = "0.4.2"
+version = "0.5.0"
 description = "The app counterpart of PAW created using Tauri."
 authors = ["Amelia"]
 license = "AGPL-3.0"

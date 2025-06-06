@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Star, LogIn, LogOut, User, Download, Camera } from 'lucide-react';
+import { Search, Star, LogIn, LogOut, User, Rows3, Download, Camera, Dice6 } from 'lucide-react';
 import { getVersion } from '@tauri-apps/api/app';
 import { open } from '@tauri-apps/plugin-shell';
 import { usePathname } from 'next/navigation';
@@ -30,9 +30,18 @@ const mainItems = [{
     url: '/',
     icon: Search
 }, {
+    title: 'Players',
+    url: '/players',
+    icon: Rows3,
+    disabled: true
+}, {
     title: 'Recently Seen',
     url: '/recent',
     icon: Camera
+}, {
+    title: 'Random',
+    url: '/random',
+    icon: Dice6
 }, {
     title: 'Favorites',
     url: '/favorites',
@@ -100,16 +109,28 @@ export function AppSidebar() {
 
                                 return (
                                     <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton
-                                            asChild
-                                            data-active={pathname === item.url}
-                                            className="w-full gap-2 [&[data-active=true]]:bg-accent [&[data-active=true]]:text-accent-foreground"
-                                        >
-                                            <Link href={item.url} className="flex items-center">
-                                                <Icon className="h-4 w-4 mr-2" />
-                                                <span>{item.title}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
+                                        {item.disabled ? (
+                                            <SidebarMenuButton
+                                                className="w-full gap-2 opacity-50 cursor-not-allowed"
+                                                title="Coming soon"
+                                            >
+                                                <div className="flex items-center">
+                                                    <Icon className="h-4 w-4 mr-2" />
+                                                    <span>{item.title}</span>
+                                                </div>
+                                            </SidebarMenuButton>
+                                        ) : (
+                                            <SidebarMenuButton
+                                                asChild
+                                                data-active={pathname === item.url}
+                                                className="w-full gap-2 [&[data-active=true]]:bg-accent [&[data-active=true]]:text-accent-foreground"
+                                            >
+                                                <Link href={item.url} className="flex items-center">
+                                                    <Icon className="h-4 w-4 mr-2" />
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        )}
                                     </SidebarMenuItem>
                                 );
                             })}

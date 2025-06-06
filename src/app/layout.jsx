@@ -7,6 +7,7 @@ import * as React from 'react';
 
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { CacheScannerProvider } from '@/context/cache-scanner-context';
+import { LogScannerProvider } from '@/context/log-scanner-context';
 import { DatabaseProvider } from '@/context/database-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import { VRChatProvider } from '@/context/vrchat-context';
@@ -114,23 +115,22 @@ export default function RootLayout({ children }) {
             <VRChatProvider>
               <PAWProvider>
                 <CacheScannerProvider>
-                  <SidebarProvider>
-                    <AppSidebar />
-                    <SidebarInset>
-                      <div className="flex min-h-screen flex-col">
-                        <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
-                          <SidebarTrigger />
-                          <div className="flex-1">
-                            <h1 className="text-xl font-semibold">VRChat Avatar Search</h1>
-                          </div>
-                        </header>
-                        <main className="flex-1 p-6">
-                          {children}
-                        </main>
-                      </div>
-                    </SidebarInset>
-                    <DiscordWidget />
-                  </SidebarProvider>
+                  <LogScannerProvider>
+                    <SidebarProvider>
+                      <AppSidebar />
+                      <SidebarInset>
+                        <div className="flex min-h-screen flex-col">
+                          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
+                            <SidebarTrigger />
+                          </header>
+                          <main className="flex-1 p-6">
+                            {children}
+                          </main>
+                        </div>
+                      </SidebarInset>
+                      <DiscordWidget />
+                    </SidebarProvider>
+                  </LogScannerProvider>
                 </CacheScannerProvider>
                 <Toaster />
               </PAWProvider>
