@@ -163,6 +163,29 @@ export function PAWProvider({ children }) {
         }
     };
 
+    const fetchRecentAvatars = async (orderBy) => {
+        try {
+            const response = await fetch(`${BASE_URL}/recent/${orderBy}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': `PAW-APP/${currentVersion}`
+                }
+            });
+
+            return {
+                success: response.ok,
+                results: response.ok ? (await response.json()).results : []
+            };
+        } catch (e) {
+            error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
+
     return (
         <PAWContext.Provider
         value={{
@@ -171,7 +194,8 @@ export function PAWProvider({ children }) {
             searchAvatars,
             refreshAvatar,
             fetchAvatar,
-            fetchRandomAvatars
+            fetchRandomAvatars,
+            fetchRecentAvatars
         }}
         >
             {children}

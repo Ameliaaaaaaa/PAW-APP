@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Star, LogIn, LogOut, User, Rows3, Download, Camera, Dice6 } from 'lucide-react';
+import { Search, Star, LogIn, LogOut, User, Rows3, Download, Camera, Dice6, Clock } from 'lucide-react';
 import { getVersion } from '@tauri-apps/api/app';
 import { open } from '@tauri-apps/plugin-shell';
 import { usePathname } from 'next/navigation';
@@ -29,6 +29,10 @@ const mainItems = [{
     title: 'Search Avatars',
     url: '/',
     icon: Search
+}, {
+    title: 'Database Updates',
+    url: '/database_updates',
+    icon: Clock
 }, {
     title: 'Players',
     url: '/players',
