@@ -1,6 +1,8 @@
 # PAW App [![Discord](https://img.shields.io/discord/1331153121472282652?color=%23512BD4&label=Discord&logo=discord&logoColor=white&style=flat)](https://discord.gg/zHhs4nQYxX)
 This repository contains the desktop application for PAW (Puppy's Avatar World), a VRChat avatar database and search platform.
 
+> Sometimes login is broken. Deleting the `me.amelia.PAW` folder in `C:\Users\USERNAME\AppData\Local` fixes it for the most part.
+
 ## Overview
 The application is built using Tauri and Next.js. It provides a native desktop experience for searching, browsing, and discovering VRChat avatars.  A key feature of the application is the ability to "force clone" avatars you have encountered directly from within the app.
 
