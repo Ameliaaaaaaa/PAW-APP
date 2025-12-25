@@ -24,7 +24,7 @@ export function VRChatProvider({ children }) {
 
                 setStore(store);
             } catch (e) {
-                error(e);
+                await error(e);
             }
         };
 
@@ -33,10 +33,10 @@ export function VRChatProvider({ children }) {
 
     const authUser = async (username, password) => {
         try {
-            const response = await fetch('https://vrchat.com/api/1/auth/user', {
+            const response = await fetch('https://api.vrchat.cloud/api/1/auth/user', {
                 method: 'GET',
                 headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+                    'User-Agent': `PAW-APP/${currentVersion} ameliab20081@gmail.com`,
                     'Authorization': `Basic ${btoa(`${username}:${password}`)}`
                 }
             });
@@ -48,15 +48,15 @@ export function VRChatProvider({ children }) {
                 username: username,
                 password: password,
                 authCookie: authCookie ? authCookie : null,
-                twoFactorAuthType: data ? data.requiresTwoFactorAuth[0] : 'none'
+                twoFactorAuthType: data && Array.isArray(data.requiresTwoFactorAuth) && data.requiresTwoFactorAuth.length > 0 ? data.requiresTwoFactorAuth[0] : 'none'
             });
     
             return {
                 success: response.ok,
-                twoFactorAuthType: data ? data.requiresTwoFactorAuth[0] : 'none'
+                twoFactorAuthType: data && Array.isArray(data.requiresTwoFactorAuth) && data.requiresTwoFactorAuth.length > 0 ? data.requiresTwoFactorAuth[0] : 'none'
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -84,7 +84,7 @@ export function VRChatProvider({ children }) {
                 success: response.ok
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -111,7 +111,7 @@ export function VRChatProvider({ children }) {
                 data: data
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -134,7 +134,7 @@ export function VRChatProvider({ children }) {
 
             if (auth && auth.authCookie) return await fetchUserInfo(auth.authCookie);
         } catch (e) {
-            error(e);
+            await error(e);
         }
     
         return {
@@ -159,7 +159,7 @@ export function VRChatProvider({ children }) {
                 success: response.ok
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -186,7 +186,7 @@ export function VRChatProvider({ children }) {
                 data: data
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -213,7 +213,7 @@ export function VRChatProvider({ children }) {
                 data: data
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -231,7 +231,7 @@ export function VRChatProvider({ children }) {
                 success: true
             };
         } catch(e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -263,4 +263,4 @@ export function useVRChat() {
     if (!context) throw new Error('useVRChat must be used within a VRChatProvider');
     
     return context;
-};
+}

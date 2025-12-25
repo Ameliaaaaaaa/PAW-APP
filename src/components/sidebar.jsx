@@ -1,15 +1,17 @@
 'use client';
 
-import { Search, Star, LogIn, LogOut, User, Rows3, Download, Camera, Dice6, Clock } from 'lucide-react';
+import { Search, Star, LogIn, LogOut, User, Download, Camera, Dice6, Clock, TreePine } from 'lucide-react';
 import { getVersion } from '@tauri-apps/api/app';
 import { open } from '@tauri-apps/plugin-shell';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ToggleTheme } from '@/components/theme-toggle';
 import { useVRChat } from '@/context/vrchat-context';
+import { Button } from '@/components/ui/button';
 import { usePAW } from '@/context/paw-context';
 
 import {
@@ -34,11 +36,6 @@ const mainItems = [{
     url: '/database_updates',
     icon: Clock
 }, {
-    title: 'Players',
-    url: '/players',
-    icon: Rows3,
-    disabled: true
-}, {
     title: 'Recently Seen',
     url: '/recent',
     icon: Camera
@@ -52,7 +49,7 @@ const mainItems = [{
     icon: Star
 }];
 
-export function AppSidebar() {
+export function AppSidebar({ snowEnabled, setSnowEnabled }) {
     const [user, setUser] = useState(null);
     const [updateAvailable, setUpdateAvailable] = useState(false);
     const [checking, setChecking] = useState(false);
@@ -65,7 +62,7 @@ export function AppSidebar() {
         const checkUserAuth = async () => {
             const userInfo = await getUserInfo();
 
-            if (userInfo) setUser(userInfo.data);
+            userInfo.success ? setUser(userInfo.data) : toast.error('Failed to fetch user info.');
         };
 
         const checkForUpdates = async () => {
@@ -76,7 +73,7 @@ export function AppSidebar() {
                 getVersion()
             ]);
 
-            if (version.success) setUpdateAvailable(currentVersion !== version.version);
+            version.success ? setUpdateAvailable(currentVersion !== version.version) : toast.error('Failed to fetch version.');
 
             setChecking(false);
         };
@@ -90,7 +87,7 @@ export function AppSidebar() {
         action: async () => {
             const result = await logout();
             
-            if (result.success) setUser(null);
+            result.success ? setUser(null) : toast.error('Failed to logout.');
         },
         icon: LogOut
     }] : [{
@@ -98,6 +95,14 @@ export function AppSidebar() {
         url: '/login',
         icon: LogIn
     }];
+
+    const isChristmas = () => {
+        const now = new Date();
+        const month = now.getMonth();
+        const day = now.getDate();
+
+        return  (month === 11 && day >= 20) || (month === 0 && day <= 1);
+    };
 
     return (
         <UISidebar className="border-r border-border">
@@ -199,6 +204,12 @@ export function AppSidebar() {
                                 </div>
                             </div>
                             <ToggleTheme />
+                            {isChristmas() && (
+                                <Button onClick={() => setSnowEnabled(!snowEnabled)} variant="outline" size="icon">
+                                    <TreePine className="h-[1.2rem] w-[1.2rem]" />
+                                    <span className="sr-only">Toggle theme</span>
+                                </Button>
+                            )}
                         </div>
                             {updateAvailable && (
                                 <button onClick={() => open('https://github.com/Ameliaaaaaaa/PAW-APP/releases/latest')} className="flex items-center justify-between w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -213,6 +224,12 @@ export function AppSidebar() {
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between">
                             <ToggleTheme />
+                            {isChristmas() && (
+                                <Button onClick={() => setSnowEnabled(!snowEnabled)} variant="outline" size="icon">
+                                    <TreePine className="h-[1.2rem] w-[1.2rem]" />
+                                    <span className="sr-only">Toggle theme</span>
+                                </Button>
+                            )}
                         </div>
                         {updateAvailable && (
                             <button onClick={() => open('https://github.com/Ameliaaaaaaa/PAW-APP/releases/latest')} className="flex items-center justify-between w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -228,4 +245,4 @@ export function AppSidebar() {
             <SidebarRail />
         </UISidebar>
     );
-};
+}

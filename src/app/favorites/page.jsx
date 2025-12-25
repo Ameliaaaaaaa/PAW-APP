@@ -24,81 +24,81 @@ export default function Page() {
     const { getCategories, getFavorites, createCategory, updateCategory, deleteCategory, unfavoriteAvatar } = useDatabase();
 
     const loadCategories = async () => {
-      const categories = await getCategories();
+        const categories = await getCategories();
 
-      setCategories(categories);
+        setCategories(categories);
 
-      if (categories.length > 0 && !selectedCategory) setSelectedCategory(categories[0]);
+        if (categories.length > 0 && !selectedCategory) setSelectedCategory(categories[0]);
 
-      setIsLoading(false);
+        setIsLoading(false);
     };
 
     const loadFavorites = async (categoryId) => {
-      const favorites = await getFavorites(categoryId);
+        const favorites = await getFavorites(categoryId);
 
-      const parsedFavorites = favorites.map((favorite) => ({
-        ...favorite,
-        avatar: JSON.parse(favorite.avatar_data)
-      }));
+        const parsedFavorites = favorites.map((favorite) => ({
+            ...favorite,
+            avatar: JSON.parse(favorite.avatar_data)
+        }));
 
-      setFavorites(parsedFavorites);
+        setFavorites(parsedFavorites);
     };
 
     useEffect(() => {
-      loadCategories();
+        loadCategories();
 
-      if (selectedCategory) loadFavorites(selectedCategory.id);
+        if (selectedCategory) loadFavorites(selectedCategory.id);
     }, [selectedCategory]);
 
     const makeCategory = async () => {
-      if (!newCategoryName.trim()) {
-        toast('Category name cannot be empty');
-        
-        return;
-      }
+        if (!newCategoryName.trim()) {
+            toast.error('Category name cannot be empty');
 
-      await createCategory(newCategoryName);
-      setNewCategoryName('');
-      setIsDialogOpen(false);
-      toast('Category created successfully');
-      await loadCategories();
+            return;
+        }
+
+        await createCategory(newCategoryName);
+        setNewCategoryName('');
+        setIsDialogOpen(false);
+        toast.success('Category created successfully');
+        await loadCategories();
     };
 
     const changeCategory = async () => {
-      if (!editingCategory || !editingCategory.name.trim()) {
-        toast('Category name cannot be empty');
+        if (!editingCategory || !editingCategory.name.trim()) {
+            toast.error('Category name cannot be empty');
 
-        return;
-      }
+            return;
+        }
 
-      await updateCategory(editingCategory.id, editingCategory.name);
-      setEditingCategory(null);
-      toast('Category updated successfully');
-      await loadCategories();
+        await updateCategory(editingCategory.id, editingCategory.name);
+        setEditingCategory(null);
+        toast('Category updated successfully');
+        await loadCategories();
 
-      if (selectedCategory && selectedCategory.id === editingCategory.id) setSelectedCategory({
-        ...selectedCategory,
-        name: editingCategory.name
-      });
+        if (selectedCategory && selectedCategory.id === editingCategory.id) setSelectedCategory({
+            ...selectedCategory,
+            name: editingCategory.name
+        });
     };
 
     const removeCategory = async (categoryId) => {
-      await deleteCategory(categoryId);
-      toast('Category deleted successfully');
-      await loadCategories()
+        await deleteCategory(categoryId);
+        toast.success('Category deleted successfully');
+        await loadCategories()
 
-      if (selectedCategory && selectedCategory.id === categoryId) {
-        const updatedCategories = categories.filter((cat) => cat.id !== categoryId);
+        if (selectedCategory && selectedCategory.id === categoryId) {
+            const updatedCategories = categories.filter((cat) => cat.id !== categoryId);
 
-        setSelectedCategory(updatedCategories.length > 0 ? updatedCategories[0] : null);
-      }
+            setSelectedCategory(updatedCategories.length > 0 ? updatedCategories[0] : null);
+        }
     };
 
     const removeFavorite = async (favoriteId) => {
-      await unfavoriteAvatar(favoriteId);
-      toast('Avatar removed from favorites');
+        await unfavoriteAvatar(favoriteId);
+        toast.success('Avatar removed from favorites');
 
-      if (selectedCategory) await loadFavorites(selectedCategory.id);
+        if (selectedCategory) await loadFavorites(selectedCategory.id);
     };
 
     return (
@@ -284,7 +284,7 @@ const UpdateTitle = () => {
     import('@tauri-apps/api/window').then((tauri) => {
       tauri.getCurrentWindow().setTitle('PAW ~ Favorites');
     });
-  } catch (error) {};
+  } catch (error) {}
 
   return null;
 };

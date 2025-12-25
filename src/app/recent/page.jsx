@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { error as err } from '@tauri-apps/plugin-log';
 import { Loader2 } from 'lucide-react';
 
-import { useCacheScanner } from '@/context/cache-scanner-context';
+import { useVrcLog } from '@/context/vrc-log-context';
 import AvatarCard from '@/components/avatar-card';
 import { usePAW } from '@/context/paw-context';
 
@@ -29,7 +29,7 @@ export default function Page() {
     const scrollListenerRef = useRef(null);
     const resizeObserverRef = useRef(null);
 
-    const { processedIds } = useCacheScanner();
+    const { getRecentlySeen } = useVrcLog();
     const { fetchAvatar } = usePAW();
 
     const calculateGridColumns = useCallback(() => {
@@ -71,16 +71,10 @@ export default function Page() {
                 try {
                     const response = await fetchAvatar(avatarId);
                     
-                    if (!response.success) {
-                        err(`Failed to fetch avatar ${avatarId}: ${response.status}`);
-
-                        return null;
-                    }
+                    if (!response.success) return null;
                     
                     return response.success && response.result ? { id: avatarId, ...response.result } : null;
                 } catch (e) {
-                    err(`Error fetching avatar ${avatarId}:`, e);
-
                     return null;
                 }
             });
@@ -97,8 +91,8 @@ export default function Page() {
 
             if (Object.keys(avatarData).length + Object.keys(newAvatarData).length >= avatarIds.length) setAllAvatarsLoaded(true);
         } catch (e) {
-            err('Error fetching avatar batch:', e);
-            setError('Failed to load avatar data');
+            await error(e);
+            setError('Failed to load avatar data.');
         } finally {
             setLoading(false);
 
@@ -161,18 +155,18 @@ export default function Page() {
     useEffect(() => {
         const fetchAvatarIds = async () => {
             try {
-                const recentAvatars = [...processedIds].reverse();
+                const recentAvatars = [...await getRecentlySeen()].reverse();
                 
                 setAvatarIds(recentAvatars);
             } catch (e) {
-                err('Error fetching recent avatars:', e);
-                setError('Failed to load recent avatar IDs');
+                await error(e);
+                setError('Failed to load recent avatar IDs.');
                 setLoading(false);
             }
         };
 
         fetchAvatarIds();
-    }, [processedIds]);
+    }, [getRecentlySeen]);
 
     useEffect(() => {
         if (avatarIds.length > 0 && currentBatch === 0) {
@@ -271,7 +265,7 @@ const UpdateTitle = () => {
         import('@tauri-apps/api/window').then((tauri) => {
             tauri.getCurrentWindow().setTitle('PAW ~ Recently Seen Avatars');
         });
-    } catch (error) {};
+    } catch (error) {}
   
     return null;
 };

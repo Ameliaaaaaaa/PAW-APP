@@ -35,7 +35,7 @@ export function PAWProvider({ children }) {
                 version: response.ok ? (await response.json()).name : '0.0.0'
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -58,7 +58,7 @@ export function PAWProvider({ children }) {
                 stats: response.ok ? (await response.json()).stats : null
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -87,7 +87,7 @@ export function PAWProvider({ children }) {
                 data: response.ok ? await response.json() : null
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -109,7 +109,7 @@ export function PAWProvider({ children }) {
                 success: response.ok
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -132,7 +132,7 @@ export function PAWProvider({ children }) {
                 result: response.ok ? (await response.json()).result : null
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -155,7 +155,7 @@ export function PAWProvider({ children }) {
                 results: response.ok ? (await response.json()).results : []
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -178,7 +178,7 @@ export function PAWProvider({ children }) {
                 results: response.ok ? (await response.json()).results : []
             };
         } catch (e) {
-            error(e);
+            await error(e);
 
             return {
                 success: false
@@ -209,4 +209,4 @@ export function usePAW() {
     if (!context) throw new Error('usePAW must be used within a PAWProvider');
     
     return context;
-};
+}

@@ -38,4 +38,4 @@ export function RefreshDialog({ avatarId, isOpen, onClose }) {
             </DialogContent>
         </Dialog>
     );
-};
+}

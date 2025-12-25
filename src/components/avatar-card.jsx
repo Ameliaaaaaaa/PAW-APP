@@ -99,7 +99,7 @@ export default function AvatarCard({ avatar }) {
 
     const addToFavorites = async (categoryId) => {
         if (!categoryId) {
-            toast('Please select a category');
+            toast.error('Please select a category.');
 
             return;
         }
@@ -107,7 +107,7 @@ export default function AvatarCard({ avatar }) {
         const favorited = await favoriteAvatar(categoryId, avatar.id, JSON.stringify(avatar));
 
         if (favorited.exists) {
-            toast('Avatar is already in this category.');
+            toast.warning('Avatar is already in this category.');
             setIsFavoriteDialogOpen(false);
 
             return;
@@ -116,7 +116,7 @@ export default function AvatarCard({ avatar }) {
         if (favorited.success) {
             setIsFavoriteDialogOpen(false);
             await checkIfFavorite();
-            toast('Added to favorites.');
+            toast.success('Added to favorites.');
         }
     };
 
@@ -125,7 +125,7 @@ export default function AvatarCard({ avatar }) {
         setIsFavoriteDialogOpen(false);
         setIsFavorite(false);
         setFavoriteEntries([]);
-        toast('Removed from favorites');
+        toast.success('Removed from favorites.');
     };
 
     const formatDate = (dateString) => {
@@ -133,16 +133,20 @@ export default function AvatarCard({ avatar }) {
     };
 
     const equipAvatar = async () => {
-        const response = await switchAvatar(avatar.id);
+        try {
+            const response = await switchAvatar(avatar.id);
 
-        response.success ? toast('Avatar selected successfully!') : toast('Failed to select avatar.');
+            response.success ? toast.success('Avatar selected successfully.') : toast.error('Failed to select avatar.');
+        } catch (e) {
+            toast.error('Failed to select avatar.');
+        }
     };
 
     return (
         <Card className="h-full overflow-hidden bg-card">
             <div className="relative aspect-video">
                 <img
-                    src={avatar.thumbnail_url || '/placeholder.svg'}
+                    src={avatar.thumbnail_url}
                     alt={avatar.name}
                     className="w-full h-full object-cover"
                 />

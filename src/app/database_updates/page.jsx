@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { error as err } from '@tauri-apps/plugin-log';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import AvatarCard from '@/components/avatar-card';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,6 @@ export default function Page() {
     const [avatarIds, setAvatarIds] = useState([]);
     const [avatarData, setAvatarData] = useState({});
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [gridColumns, setGridColumns] = useState(3);
     const [allAvatarsLoaded, setAllAvatarsLoaded] = useState(false);
     const [currentBatch, setCurrentBatch] = useState(0);
@@ -79,14 +78,14 @@ export default function Page() {
                     const response = await fetchAvatar(avatarId);
                     
                     if (!response.success) {
-                        err(`Failed to fetch avatar ${avatarId}: ${response.status}`);
+                        toast.error(`Failed to fetch avatar ${avatarId}.`);
 
                         return null;
                     }
                     
                     return response.success && response.result ? { id: avatarId, ...response.result } : null;
                 } catch (e) {
-                    err(`Error fetching avatar ${avatarId}:`, e);
+                    toast.error(`Failed to fetch avatar ${avatarId}.`);
 
                     return null;
                 }
@@ -104,8 +103,7 @@ export default function Page() {
 
             if (Object.keys(avatarData).length + Object.keys(newAvatarData).length >= avatarIds.length) setAllAvatarsLoaded(true);
         } catch (e) {
-            err('Error fetching avatar batch:', e);
-            setError('Failed to load avatar data');
+            toast.error('Failed to load avatar data.');
         } finally {
             setLoading(false);
 
@@ -136,6 +134,7 @@ export default function Page() {
             setVisibleRange({ start: startIndex, end: endIndex });
             
             const loadingElement = loadingRef.current;
+
             if (loadingElement && !allAvatarsLoaded && !loading && !fetchingRef.current && loadingElement.getBoundingClientRect().top < window.innerHeight + 500) {
                 const batchIds = loadNextBatch();
 
@@ -173,15 +172,14 @@ export default function Page() {
 
                 const response = await fetchRecentAvatars(orderBy);
                 
-                if (!response.success) throw new Error('Failed to fetch recent avatars');
+                if (!response.success) toast.error('Failed to load recent avatar IDs.');
 
                 setAvatarIds(response.results.map(avatar => avatar.id));
                 setAvatarData({});
                 setCurrentBatch(0);
                 setAllAvatarsLoaded(false);
             } catch (e) {
-                err('Error fetching recent avatars:', e);
-                setError('Failed to load recent avatar IDs');
+                toast.error('Failed to load recent avatar IDs.');
             } finally {
                 setLoading(false);
             }
@@ -225,8 +223,6 @@ export default function Page() {
             width: `calc(${100 / gridColumns}% - ${GRID_GAP}px)` 
         };
     };
-
-    if (error) return (<div className="text-center text-red-500 p-4"><p>{error}</p></div>);
     
     return (
         <div>
@@ -298,7 +294,7 @@ const UpdateTitle = () => {
         import('@tauri-apps/api/window').then((tauri) => {
             tauri.getCurrentWindow().setTitle('PAW ~ Database Updates');
         });
-    } catch (error) {};
+    } catch (error) {}
   
     return null;
 }; 

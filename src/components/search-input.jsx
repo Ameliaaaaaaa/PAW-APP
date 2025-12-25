@@ -39,16 +39,15 @@ export default function SearchInput({ onSearch }) {
                 <ToggleGroupItem value="author_name" aria-label="Search by author name">
                     Author Name
                 </ToggleGroupItem>
-                <ToggleGroupItem disabled value="ai" aria-label="AI Search" className="relative">
+                <ToggleGroupItem value="ai_tags" aria-label="Search by AI">
                     <Sparkles className="mr-2 h-4 w-4"/>
-                    AI Search
-                    <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs px-1 rounded">Soon</span>
+                    AI
                 </ToggleGroupItem>
             </ToggleGroup>
 
-            {searchType === 'ai' && (
+            {searchType === 'ai_tags' && (
                 <p className="text-sm text-muted-foreground text-center">
-                    Describe what you're looking for in natural language. For example: "cute anime girl avatars with cat ears" or "robot avatars with neon effects"
+                    Describe what you are looking for and the AI will return results that match.
                 </p>
             )}
 

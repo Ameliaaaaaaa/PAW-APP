@@ -1,8 +1,10 @@
-# PAW App [![Discord](https://img.shields.io/discord/1331153121472282652?color=%23512BD4&label=Discord&logo=discord&logoColor=white&style=flat)](https://discord.gg/zHhs4nQYxX)
+# PAW App 
 This repository contains the desktop application for PAW (Puppy's Avatar World), a VRChat avatar database and search platform.
 
+[![Discord](https://img.shields.io/discord/1331153121472282652?color=%23512BD4&label=Discord&logo=discord&logoColor=white&style=flat)](https://discord.gg/zHhs4nQYxX)
+
 ## Overview
-The application is built using Tauri and Next.js. It provides a native desktop experience for searching, browsing, and discovering VRChat avatars.  A key feature of the application is the ability to "force clone" avatars you have encountered directly from within the app.
+The application is built using Tauri and Next.js. It provides a native desktop experience for searching, browsing, and discovering VRChat avatars. A key feature of the application is the ability to "force clone" avatars you have encountered directly from within the app.
 
 ## Getting Started
 ### Prerequisites
@@ -21,8 +23,11 @@ The application is built using Tauri and Next.js. It provides a native desktop e
 1.  Run the build command: `npm run tauri build` or `yarn tauri build`
 
 ### Technologies Used
-*   Tauri
-*   Next.js
-*   React
-*   Tailwind CSS
-*   Shadcn UI
+*   [Tauri](https://tauri.app)
+*   [Next.js](https://nextjs.org)
+*   [React](https://react.dev)
+*   [Tailwind CSS](https://tailwindcss.com)
+*   [Shadcn UI](https://ui.shadcn.com)
+
+## Credits
+Fetching and posting avatars to PAW leverages [VRC-LOG](https://github.com/ShayBox/VRC-LOG) in the background.

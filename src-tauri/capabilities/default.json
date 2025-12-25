@@ -28,10 +28,10 @@
       ]
     },
     "log:default",
-    "sql:allow-close",
-    "sql:allow-execute",
-    "sql:allow-load",
-    "sql:allow-select",
+    "rusqlite2:allow-close",
+    "rusqlite2:allow-execute",
+    "rusqlite2:allow-load",
+    "rusqlite2:allow-select",
     "fs:default",
     {
       "identifier": "fs:read-all",
@@ -131,6 +131,7 @@
         }
       ]
     },
-    "shell:default"
+    "shell:default",
+    "dialog:default"
   ]
 }

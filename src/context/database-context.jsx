@@ -1,15 +1,15 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { error as err } from '@tauri-apps/plugin-log';
-import Database from '@tauri-apps/plugin-sql';
+import Database from '@razein97/tauri-plugin-rusqlite2';
+import { error } from '@tauri-apps/plugin-log';
+import { toast } from 'sonner';
 
 const DatabaseContext = createContext(null);
 
 export function DatabaseProvider({ children }) {
     const [database, setDatabase] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const openDatabase = async () => {
@@ -22,8 +22,9 @@ export function DatabaseProvider({ children }) {
                 setDatabase(database);
                 setLoading(false);
             } catch (e) {
-                err(e);
-                setError(e);
+                await error(e);
+                toast.error('Failed to open database.');
+            } finally {
                 setLoading(false);
             }
         };
@@ -51,8 +52,8 @@ export function DatabaseProvider({ children }) {
 
             return await database.select('SELECT * FROM categories ORDER BY name;');
         } catch (e) {
-            err(e);
-            setError(e);
+            await error(e);
+        } finally {
             setLoading(false);
         }
     };
@@ -122,7 +123,7 @@ export function DatabaseProvider({ children }) {
             {children}
         </DatabaseContext.Provider>
     );
-};
+}
 
 export function useDatabase() {
     const context = useContext(DatabaseContext);
@@ -130,4 +131,4 @@ export function useDatabase() {
     if (!context) throw new Error('useDatabase must be used within a DatabaseProvider');
     
     return context;
-};
+}

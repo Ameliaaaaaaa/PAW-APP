@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,9 +19,13 @@ export default function AvatarInfoDialog({ avatarId, isOpen, onClose }) {
     const { getAvatar } = useVRChat();
 
     const fetchData = async () => {
-        const avatarResponse = await getAvatar(avatarId);
-    
-        if (avatarResponse.success) setAvatar(avatarResponse.data);
+        try {
+            const avatarResponse = await getAvatar(avatarId);
+
+            avatarResponse.success ? setAvatar(avatarResponse.data) : toast.error('Failed to fetch avatar.');
+        } catch (e) {
+            toast.error('Failed to fetch avatar.');
+        }
     };
 
     useEffect(() => {
@@ -44,7 +49,7 @@ export default function AvatarInfoDialog({ avatarId, isOpen, onClose }) {
                                 <div className="flex gap-8">
                                     <div className="w-1/3">
                                         <div className="relative aspect-[1/1] overflow-hidden rounded-xl cursor-pointer group" onClick={() => setIsImageExpanded(true)}>
-                                            <img src={avatar.thumbnailImageUrl || '/placeholder.svg'} alt={avatar.name} className="w-full h-full object-cover shadow-xl transition-transform group-hover:scale-105"/>
+                                            <img src={avatar.thumbnailImageUrl} alt={avatar.name} className="w-full h-full object-cover shadow-xl transition-transform group-hover:scale-105"/>
                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                                                 <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium">Click to expand</span>
                                             </div>
@@ -166,9 +171,9 @@ export default function AvatarInfoDialog({ avatarId, isOpen, onClose }) {
             </Dialog>
 
             <Dialog open={isImageExpanded} onOpenChange={setIsImageExpanded}>
-                <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                    <div className="relative w-full h-full">
-                        <img src={avatar.thumbnailImageUrl || '/placeholder.svg'} alt={avatar.name} className="w-full h-full object-contain"/>
+                <DialogContent className="max-w-screen-2xl max-h-screen p-0 overflow-hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <div className="relative w-full h-[65vh] flex items-center justify-center">
+                        <img src={avatar.imageUrl} alt={avatar.name} className="max-w-full max-h-full w-auto h-auto object-contain"/>
                     </div>
                 </DialogContent>
             </Dialog>

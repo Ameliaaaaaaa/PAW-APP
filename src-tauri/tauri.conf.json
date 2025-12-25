@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "PAW",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "identifier": "me.amelia.PAW",
   "build": {
     "frontendDist": "../out",
@@ -32,6 +32,9 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
+    ],
+    "resources": [
+      "../THIRD-PARTY-LICENSES.md"
     ]
   }
 }

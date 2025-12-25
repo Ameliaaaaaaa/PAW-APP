@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { error as err } from '@tauri-apps/plugin-log';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Card, CardContent } from '@/components/ui/card';
 import SearchInput from '@/components/search-input';
@@ -16,11 +16,9 @@ const GRID_GAP = 20;
 export default function Page() {
     const [avatars, setAvatars] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
     const [stats, setStats] = useState(null);
     const [statsLoading, setStatsLoading] = useState(true);
-    const [statsError, setStatsError] = useState(null);
     const [currentSearchType, setCurrentSearchType] = useState('name');
     const [currentQuery, setCurrentQuery] = useState('');
     const [currentPlatforms, setCurrentPlatforms] = useState([]);
@@ -81,7 +79,6 @@ export default function Page() {
 
         resizeObserverRef.current = new ResizeObserver(() => {
             calculateGridColumns();
-
             handleScroll();
         });
         
@@ -103,15 +100,15 @@ export default function Page() {
 
     const getStats = async () => {
         setStatsLoading(true);
-        setStatsError(null);
 
-        const response = await fetchStats();
-    
-        if (response.success) {
-            setStats(response.stats);
+        try {
+            const response = await fetchStats();
+
+            response.success ? setStats(response.stats) : toast.error('Failed to load stats.');
+        } catch (e) {
+            toast.error('Failed to load stats.');
+        } finally {
             setStatsLoading(false);
-        } else {
-            setStatsError('Failed to load stats.');
         }
     };
 
@@ -123,31 +120,30 @@ export default function Page() {
         if (loading || !hasNextPage || isLoadingMoreRef.current) return;
 
         isLoadingMoreRef.current = true;
-
         setLoading(true);
-        setError(null);
 
         try {
             const response = await searchAvatars(currentSearchType, currentQuery, currentPlatforms.join(','), pageRef, currentOrderBy);
 
-            if (!response.success) throw new Error(`Failed to fetch avatars.`);
-
-            if (response.data.success) {
-                setAvatars((prev) => [...prev, ...response.data.results]);
-                setHasNextPage(response.data.pagination.hasNextPage);
-                setTotalItems(response.data.pagination.totalCount);
-                setAllItemsLoaded(!response.data.pagination.hasNextPage);
-
-                pageRef.current += 1;
-            } else {
-                throw new Error('API request was not successful.');
+            if (!response?.success || !response.data?.success) {
+                toast.error('Failed to fetch avatars.');
+                setHasNextPage(false);
+                setAllItemsLoaded(true);
+                return;
             }
-        } catch (error) {
-            setError(`An error occurred while fetching avatars: ${error.message}`);
-            err(error);
+
+            setAvatars(prev => [...prev, ...response.data.results]);
+            setHasNextPage(response.data.pagination.hasNextPage);
+            setTotalItems(response.data.pagination.totalCount);
+            setAllItemsLoaded(!response.data.pagination.hasNextPage);
+
+            pageRef.current += 1;
+        } catch (e) {
+            toast.error('Failed to fetch avatars.');
+            setHasNextPage(false);
+            setAllItemsLoaded(true);
         } finally {
             setLoading(false);
-
             isLoadingMoreRef.current = false;
         }
     }, [loading, hasNextPage, currentSearchType, currentQuery, currentPlatforms, currentOrderBy]);
@@ -204,15 +200,13 @@ export default function Page() {
             <UpdateTitle />
 
             <h1 className="text-4xl font-bold mb-8 text-center">VRChat Avatar Search</h1>
-            <p className="text-center mb-8">Use the toggle to switch between searching by avatar name, description or author ID.</p>
+            <p className="text-center mb-8">Use the toggle to switch between searching by avatar name, description, author ID or AI.</p>
 
             <div className="container mx-auto px-4 py-8" ref={containerRef}>
                 {statsLoading ? (
                     <div className="flex justify-center items-center h-16">
                         <Loader2 className="h-6 w-6 animate-spin" />
                     </div>
-                ) : statsError ? (
-                    <div className="text-red-500 text-center mb-4">{statsError}</div>
                 ) : (
                     stats && (
                         <Card className="mb-6">
@@ -242,11 +236,10 @@ export default function Page() {
 
                 <SearchInput onSearch={handleSearch} />
                 <br />
-                {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-                {!loading && !error && hasSearched && avatars.length === 0 && (
+                {!loading && hasSearched && avatars.length === 0 && (
                     <div className="text-center mb-4">No avatars found. Try a different search term or platform combination.</div>
                 )}
-                {!loading && !error && !hasSearched && (
+                {!loading && !hasSearched && (
                     <div className="text-center mb-4">Enter a search term to find VRChat avatars.</div>
                 )}
 
@@ -306,7 +299,7 @@ const UpdateTitle = () => {
         import('@tauri-apps/api/window').then((tauri) => {
             tauri.getCurrentWindow().setTitle('PAW ~ Search Avatars');
         });
-    } catch (error) {};
+    } catch (error) {}
     
     return null;
 };

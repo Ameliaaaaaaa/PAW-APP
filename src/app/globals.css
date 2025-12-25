@@ -3,379 +3,379 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 300 100% 98%;
-    --foreground: 272 10% 25%;
-    --card: 0 0% 100%;
-    --card-foreground: 272 10% 25%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 272 10% 25%;
-    --primary: 330 85% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 300 30% 96%;
-    --secondary-foreground: 272 10% 25%;
-    --muted: 300 30% 96%;
-    --muted-foreground: 272 10% 50%;
-    --accent: 300 30% 96%;
-    --accent-foreground: 272 10% 25%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 300 10% 90%;
-    --input: 300 10% 90%;
-    --ring: 330 85% 55%;
-    --radius: 0.5rem;
-  }
+    :root {
+        --background: 300 100% 98%;
+        --foreground: 272 10% 25%;
+        --card: 0 0% 100%;
+        --card-foreground: 272 10% 25%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 272 10% 25%;
+        --primary: 330 85% 55%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 300 30% 96%;
+        --secondary-foreground: 272 10% 25%;
+        --muted: 300 30% 96%;
+        --muted-foreground: 272 10% 50%;
+        --accent: 300 30% 96%;
+        --accent-foreground: 272 10% 25%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 300 10% 90%;
+        --input: 300 10% 90%;
+        --ring: 330 85% 55%;
+        --radius: 0.5rem;
+    }
 
-  .dark {
-    --background: 270 15% 5%;
-    --foreground: 0 0% 98%;
-    --card: 270 15% 8%;
-    --card-foreground: 0 0% 98%;
-    --popover: 270 15% 8%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 339 90% 51%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 270 15% 12%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 270 15% 12%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 339 90% 51%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 270 15% 15%;
-    --input: 270 15% 15%;
-    --ring: 339 90% 51%;
-  }
+    .dark {
+        --background: 270 15% 5%;
+        --foreground: 0 0% 98%;
+        --card: 270 15% 8%;
+        --card-foreground: 0 0% 98%;
+        --popover: 270 15% 8%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 339 90% 51%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 270 15% 12%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 270 15% 12%;
+        --muted-foreground: 240 5% 64.9%;
+        --accent: 339 90% 51%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 270 15% 15%;
+        --input: 270 15% 15%;
+        --ring: 339 90% 51%;
+    }
 
-  .modstmous {
-    --background: 0 0% 0%;
-    --foreground: 28 100% 60%;
-    --card: 280 100% 15%;
-    --card-foreground: 28 100% 60%;
-    --popover: 280 100% 15%;
-    --popover-foreground: 28 100% 60%;
-    --primary: 290 100% 40%;
-    --primary-foreground: 28 100% 70%;
-    --secondary: 290 70% 20%;
-    --secondary-foreground: 28 100% 60%;
-    --muted: 290 70% 20%;
-    --muted-foreground: 28 70% 50%;
-    --accent: 290 100% 40%;
-    --accent-foreground: 28 100% 60%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 28 100% 60%;
-    --border: 290 70% 25%;
-    --input: 290 70% 25%;
-    --ring: 290 100% 40%;
-  }
+    .modstmous {
+        --background: 0 0% 0%;
+        --foreground: 28 100% 60%;
+        --card: 280 100% 15%;
+        --card-foreground: 28 100% 60%;
+        --popover: 280 100% 15%;
+        --popover-foreground: 28 100% 60%;
+        --primary: 290 100% 40%;
+        --primary-foreground: 28 100% 70%;
+        --secondary: 290 70% 20%;
+        --secondary-foreground: 28 100% 60%;
+        --muted: 290 70% 20%;
+        --muted-foreground: 28 70% 50%;
+        --accent: 290 100% 40%;
+        --accent-foreground: 28 100% 60%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 28 100% 60%;
+        --border: 290 70% 25%;
+        --input: 290 70% 25%;
+        --ring: 290 100% 40%;
+    }
 
-  .puppyDark {
-    --background: 340 30% 5%;
-    --foreground: 340 100% 90%;
-    --card: 340 30% 10%;
-    --card-foreground: 340 100% 90%;
-    --popover: 340 30% 10%;
-    --popover-foreground: 340 100% 90%;
-    --primary: 340 100% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 340 30% 15%;
-    --secondary-foreground: 340 100% 90%;
-    --muted: 340 30% 15%;
-    --muted-foreground: 340 50% 70%;
-    --accent: 340 100% 60%;
-    --accent-foreground: 340 100% 90%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 340 100% 90%;
-    --border: 340 30% 20%;
-    --input: 340 30% 20%;
-    --ring: 340 100% 60%;
-  }
+    .puppyDark {
+        --background: 340 30% 5%;
+        --foreground: 340 100% 90%;
+        --card: 340 30% 10%;
+        --card-foreground: 340 100% 90%;
+        --popover: 340 30% 10%;
+        --popover-foreground: 340 100% 90%;
+        --primary: 340 100% 60%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 340 30% 15%;
+        --secondary-foreground: 340 100% 90%;
+        --muted: 340 30% 15%;
+        --muted-foreground: 340 50% 70%;
+        --accent: 340 100% 60%;
+        --accent-foreground: 340 100% 90%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 340 100% 90%;
+        --border: 340 30% 20%;
+        --input: 340 30% 20%;
+        --ring: 340 100% 60%;
+    }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
 }
 
 .modstmous .badge {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
 }
 
 .modstmous input,
 .modstmous select,
 .modstmous textarea {
-  background-color: hsl(var(--input));
-  border-color: hsl(var(--ring));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--input));
+    border-color: hsl(var(--ring));
+    color: hsl(var(--foreground));
 }
 
 .modstmous input::placeholder {
-  color: hsl(var(--muted-foreground));
+    color: hsl(var(--muted-foreground));
 }
 
 .modstmous .dropdown-menu {
-  background-color: hsl(var(--card));
-  border-color: hsl(var(--ring));
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .avatar-card {
-  background-color: hsl(var(--card));
-  border-color: hsl(var(--ring));
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .performance-rating {
-  background-color: hsl(var(--secondary));
+    background-color: hsl(var(--secondary));
 }
 
 .modstmous .sidebar-rail {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--ring));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .sidebar-content {
-  background-color: hsl(var(--background));
+    background-color: hsl(var(--background));
 }
 
 .modstmous .sidebar-footer {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--ring));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .sidebar-group-content {
-  background-color: hsl(var(--background));
+    background-color: hsl(var(--background));
 }
 
 .modstmous .sidebar-menu {
-  background-color: hsl(var(--background));
+    background-color: hsl(var(--background));
 }
 
 .modstmous .sidebar-menu-item {
-  color: hsl(var(--foreground));
+    color: hsl(var(--foreground));
 }
 
 .modstmous .sidebar-menu-button:hover {
-  background-color: hsl(var(--secondary));
+    background-color: hsl(var(--secondary));
 }
 
 .modstmous .header {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--ring));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .search-input {
-  background-color: hsl(var(--input));
+    background-color: hsl(var(--input));
 }
 
 .modstmous .tab {
-  color: hsl(var(--foreground));
+    color: hsl(var(--foreground));
 }
 
 .modstmous .tab[data-state="active"] {
-  color: hsl(var(--foreground));
-  border-color: hsl(var(--primary));
+    color: hsl(var(--foreground));
+    border-color: hsl(var(--primary));
 }
 
 .modstmous .checkbox {
-  border-color: hsl(var(--ring));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .checkbox[data-state="checked"] {
-  background-color: hsl(var(--primary));
-  border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
 }
 
 .modstmous .dialog-content {
-  background-color: hsl(var(--card));
-  border-color: hsl(var(--ring));
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .tooltip-content {
-  background-color: hsl(var(--card));
-  border-color: hsl(var(--ring));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--ring));
+    color: hsl(var(--foreground));
 }
 
 .modstmous .avatar-image {
-  border-color: hsl(var(--ring));
+    border-color: hsl(var(--ring));
 }
 
 .modstmous .platform-badge {
-  background-color: hsl(var(--secondary));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--secondary));
+    color: hsl(var(--foreground));
 }
 
 .modstmous .platform-badge[data-compatible="true"] {
-  background-color: hsl(160 100% 9%);
-  color: hsl(var(--foreground));
+    background-color: hsl(160 100% 9%);
+    color: hsl(var(--foreground));
 }
 
 .modstmous .platform-badge[data-compatible="false"] {
-  background-color: hsl(var(--destructive));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--destructive));
+    color: hsl(var(--foreground));
 }
 
 .puppyDark {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
 }
 
 .puppyDark .bg-background {
-  background-color: hsl(var(--background));
+    background-color: hsl(var(--background));
 }
 
 .puppyDark .bg-card,
 .puppyDark .bg-popover {
-  background-color: hsl(var(--card));
-  color: hsl(var(--card-foreground));
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
 }
 
 .puppyDark .bg-muted,
 .puppyDark .bg-secondary {
-  background-color: hsl(var(--secondary));
-  color: hsl(var(--secondary-foreground));
+    background-color: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
 }
 
 .puppyDark .border-border {
-  border-color: hsl(var(--border));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .bg-primary,
 .puppyDark .text-primary {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
 }
 
 .puppyDark .bg-accent {
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
 }
 
 .puppyDark button[data-variant="default"] {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
 }
 
 .puppyDark button[data-variant="outline"] {
-  border-color: hsl(var(--border));
-  background-color: transparent;
+    border-color: hsl(var(--border));
+    background-color: transparent;
 }
 
 .puppyDark button[data-variant="outline"]:hover {
-  background-color: hsl(var(--secondary));
+    background-color: hsl(var(--secondary));
 }
 
 .puppyDark .card {
-  background-color: hsl(var(--card));
-  border-color: hsl(var(--border));
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .text-muted-foreground {
-  color: hsl(var(--muted-foreground));
+    color: hsl(var(--muted-foreground));
 }
 
 .puppyDark .sidebar {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--border));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .sidebar-header {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--border));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .sidebar-menu-button[data-active="true"] {
-  background-color: hsl(var(--secondary));
+    background-color: hsl(var(--secondary));
 }
 
 .puppyDark .sidebar-rail {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--border));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .sidebar-content {
-  background-color: hsl(var(--background));
+    background-color: hsl(var(--background));
 }
 
 .puppyDark .sidebar-footer {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--border));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .sidebar-group-content {
-  background-color: hsl(var(--background));
+    background-color: hsl(var(--background));
 }
 
 .puppyDark .sidebar-menu {
-  background-color: hsl(var(--background));
+    background-color: hsl(var(--background));
 }
 
 .puppyDark .sidebar-menu-item {
-  color: hsl(var(--foreground));
+    color: hsl(var(--foreground));
 }
 
 .puppyDark .sidebar-menu-button:hover {
-  background-color: hsl(var(--secondary));
+    background-color: hsl(var(--secondary));
 }
 
 .puppyDark .header {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--border));
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .search-input {
-  background-color: hsl(var(--card));
+    background-color: hsl(var(--card));
 }
 
 .puppyDark .tab {
-  color: hsl(var(--foreground));
+    color: hsl(var(--foreground));
 }
 
 .puppyDark .tab[data-state="active"] {
-  color: hsl(var(--foreground));
-  border-color: hsl(var(--primary));
+    color: hsl(var(--foreground));
+    border-color: hsl(var(--primary));
 }
 
 .puppyDark .checkbox {
-  border-color: hsl(var(--border));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .checkbox[data-state="checked"] {
-  background-color: hsl(var(--primary));
-  border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
 }
 
 .puppyDark .dialog-content {
-  background-color: hsl(var(--card));
-  border-color: hsl(var(--border));
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .tooltip-content {
-  background-color: hsl(var(--card));
-  border-color: hsl(var(--border));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--border));
+    color: hsl(var(--foreground));
 }
 
 .puppyDark .avatar-image {
-  border-color: hsl(var(--border));
+    border-color: hsl(var(--border));
 }
 
 .puppyDark .platform-badge {
-  background-color: hsl(var(--secondary));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--secondary));
+    color: hsl(var(--foreground));
 }
 
 .puppyDark .platform-badge[data-compatible="true"] {
-  background-color: hsl(160 100% 9%);
-  color: hsl(var(--foreground));
+    background-color: hsl(160 100% 9%);
+    color: hsl(var(--foreground));
 }
 
 .puppyDark .platform-badge[data-compatible="false"] {
-  background-color: hsl(var(--destructive));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--destructive));
+    color: hsl(var(--foreground));
 }

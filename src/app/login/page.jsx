@@ -21,27 +21,35 @@ export default function Page() {
         event.preventDefault();
         setIsLoading(true);
 
-        const auth = await authUser(credentials.username, credentials.password);
+        try {
+            const auth = await authUser(credentials.username, credentials.password);
 
-        if (auth.success) {
-          auth.twoFactorAuthType !== 'none' ? setIs2FAModalOpen(true) : toast('Logged in successfully!');
-        } else {
-          toast('Failed to log in. Please check your credentials.');
+            if (auth.success) {
+                auth.twoFactorAuthType !== 'none' ? setIs2FAModalOpen(true) : toast.success('Logged in successfully!');
+            } else {
+                toast.error('Failed to log in. Please check your credentials.');
+            }
+        } catch (e) {
+            toast.error('Failed to log in. Please check your credentials.');
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     const handle2FASubmit = async (code) => {
         setIsLoading(true);
 
-        const verify = await verify2fa(code);
+        try {
+            const verify = await verify2fa(code);
 
-        setIs2FAModalOpen(false);
+            setIs2FAModalOpen(false);
 
-        verify.success ? toast('Logged in successfully!') : toast('Failed to verify 2FA code.');
-
-        setIsLoading(false);
+            verify.success ? toast.success('Logged in successfully!') : toast.error('Failed to verify 2FA code.');
+        } catch (e) {
+            toast.error('Failed to verify 2FA code.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleChange = (event) => {
@@ -110,7 +118,7 @@ const UpdateTitle = () => {
         import('@tauri-apps/api/window').then((tauri) => {
             tauri.getCurrentWindow().setTitle('PAW ~ Login');
         });
-    } catch (error) {};
+    } catch (error) {}
   
     return null;
 };
