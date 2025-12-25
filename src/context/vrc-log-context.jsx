@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect } from 'react';
+import { homeDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/core';
 
 const VrcLogContext = createContext(null);
@@ -13,11 +14,11 @@ export function VrcLogProvider({ children }) {
     useEffect(() => {
         const startLogWatcher = async () => {
             await invoke('start_log_watcher', {
-                path: 'C:\\Users\\Amelia\\AppData\\LocalLow\\VRChat\\VRChat'
+                path: `${await homeDir()}\\AppData\\LocalLow\\VRChat\\VRChat`
             });
 
             await invoke('start_log_watcher', {
-                path: 'C:\\Users\\Amelia\\AppData\\Local\\Temp\\VRChat\\VRChat'
+                path: `${await homeDir()}\\AppData\\Local\\Temp\\VRChat\\VRChat`
             });
         };
 

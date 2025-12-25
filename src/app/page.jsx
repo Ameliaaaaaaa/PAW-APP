@@ -1,13 +1,23 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Shield, Eye, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Card, CardContent } from '@/components/ui/card';
 import SearchInput from '@/components/search-input';
 import AvatarCard from '@/components/avatar-card';
+import { Button } from '@/components/ui/button';
 import { usePAW } from '@/context/paw-context';
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from '@/components/ui/dialog';
 
 const AVATAR_CARD_WIDTH = 320;
 const AVATAR_CARD_HEIGHT = 590;
@@ -28,6 +38,8 @@ export default function Page() {
     const [allItemsLoaded, setAllItemsLoaded] = useState(false);
     const [visibleRange, setVisibleRange] = useState({ start: 0, end: 20 });
     const [gridColumns, setGridColumns] = useState(3);
+    const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
+    const [privacyCheckComplete, setPrivacyCheckComplete] = useState(false);
 
     const pageRef = useRef(1);
     const containerRef = useRef(null);
@@ -37,6 +49,31 @@ export default function Page() {
     const resizeObserverRef = useRef(null);
 
     const { fetchStats, searchAvatars } = usePAW();
+
+    useEffect(() => {
+        const checkPrivacyNotice = async () => {
+            try {
+                const hasSeenNotice = localStorage.getItem('privacy-notice-seen');
+
+                if (!hasSeenNotice) setShowPrivacyDialog(true);
+            } catch (error) {
+                setShowPrivacyDialog(true);
+            } finally {
+                setPrivacyCheckComplete(true);
+            }
+        };
+
+        checkPrivacyNotice();
+    }, []);
+
+    const handlePrivacyAccept = async () => {
+        try {
+            localStorage.setItem('privacy-notice-seen', 'true');
+            setShowPrivacyDialog(false);
+        } catch (error) {
+            setShowPrivacyDialog(false);
+        }
+    };
 
     useEffect(() => {
         const container = containerRef.current;
@@ -198,6 +235,58 @@ export default function Page() {
     return (
         <div>
             <UpdateTitle />
+
+            <Dialog open={showPrivacyDialog && privacyCheckComplete} onOpenChange={setShowPrivacyDialog}>
+                <DialogContent className="sm:max-w-[600px]">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-2xl">
+                            <Shield className="h-6 w-6 text-primary" />
+                            Your Privacy Matters
+                        </DialogTitle>
+                        <DialogDescription className="text-base pt-4">
+                            Welcome to PAW! Here's how we protect your privacy:
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="space-y-4 py-4">
+                        <div className="flex gap-3">
+                            <Eye className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                            <div>
+                                <h4 className="font-semibold mb-1">Local Scanning Only</h4>
+                                <p className="text-sm text-muted-foreground">
+                                    PAW scans your VRChat output logs and amplitude cache file locally on your device to find avatar IDs you've encountered. Only these IDs are submitted to our servers.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <Lock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                            <div>
+                                <h4 className="font-semibold mb-1">Your Data Stays Local</h4>
+                                <p className="text-sm text-muted-foreground">
+                                    When you log in, your account information is <strong>never sent to PAW servers</strong>. All your personal data is stored and used exclusively on your device.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <Shield className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                            <div>
+                                <h4 className="font-semibold mb-1">Privacy First</h4>
+                                <p className="text-sm text-muted-foreground">
+                                    We believe in transparency. Your VRChat account credentials and personal information remain completely private to you.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <DialogFooter>
+                        <Button onClick={handlePrivacyAccept} className="w-full">
+                            I Understand
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             <h1 className="text-4xl font-bold mb-8 text-center">VRChat Avatar Search</h1>
             <p className="text-center mb-8">Use the toggle to switch between searching by avatar name, description, author ID or AI.</p>

@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "PAW"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "crossbeam",
  "dirs 5.0.1",
