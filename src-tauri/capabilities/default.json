@@ -7,6 +7,7 @@
   ],
   "permissions": [
     "core:window:allow-set-title",
+    "core:webview:allow-clear-all-browsing-data",
     "core:window:default",
     "core:default",
     "store:default",
@@ -27,6 +28,7 @@
         }
       ]
     },
+    "http:allow-fetch-cancel-body",
     "log:default",
     "rusqlite2:allow-close",
     "rusqlite2:allow-execute",
@@ -128,10 +130,30 @@
           "name": "open-github-repository",
           "cmd": "open",
           "args": "open: ^https://github.com/Ameliaaaaaaa/PAW-APP/releases/latest"
+        },
+        {
+          "name": "open-github-repository",
+          "cmd": "open",
+          "args": "open: ^https://github.com/Ameliaaaaaaa/PAW-APP"
         }
       ]
     },
     "shell:default",
-    "dialog:default"
+    "dialog:default",
+    "opener:default",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {
+          "path": "$APPDATA"
+        },
+        {
+          "path": "$APPLOCALDATA"
+        },
+        {
+          "path": "$APPLOCALDATA/logs"
+        }
+      ]
+    }
   ]
 }

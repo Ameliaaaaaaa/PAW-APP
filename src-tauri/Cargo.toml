@@ -1,6 +1,6 @@
 [package]
 name = "PAW"
-version = "0.6.2"
+version = "0.7.0"
 description = "The app counterpart of PAW created using Tauri."
 authors = ["Amelia"]
 license = "AGPL-3.0"
@@ -18,18 +18,19 @@ tauri-build = { version = "2.0.4", features = [] }
 [dependencies]
 serde_json = "1.0"
 log = "0.4"
-tauri = { version = "2.5.1", features = [] }
-tauri-plugin-log = "2"
-tauri-plugin-store = "2"
-tauri-plugin-http = { version = "2", features = ["unsafe-headers"] }
+tauri = { version = "2.9.1", features = [] }
+tauri-plugin-log = "2.8.0"
+tauri-plugin-store = "2.4.1"
+tauri-plugin-http = { version = "2.5.6", features = ["unsafe-headers"] }
 dirs = "5.0"
-tauri-plugin-dialog = "2.4.0"
-tauri-plugin-rusqlite2 = "2.0.3"
-tauri-plugin-fs = { version = "2", features = ["watch"] }
-tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2.6.0"
+tauri-plugin-rusqlite2 = "=2.0.3"
+tauri-plugin-fs = { version = "2.4.4", features = ["watch"] }
+tauri-plugin-shell = "2.3.3"
 vrc-log = "0.14.0"
 crossbeam = "0.8"
 tokio = { version = "1", features = ["rt", "macros"] }
+tauri-plugin-opener = "2.5.2"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-single-instance = "2"
+tauri-plugin-single-instance = "2.3.6"

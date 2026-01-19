@@ -9,6 +9,7 @@ import { FaDiscord } from 'react-icons/fa';
 import { toast } from 'sonner';
 
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
+import { LanguageProvider } from '@/context/language-provider-context';
 import { DatabaseProvider } from '@/context/database-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import { VrcLogProvider } from '@/context/vrc-log-context';
@@ -187,30 +188,32 @@ export default function RootLayout({ children }) {
         <body>
         <DisableMenu/>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <DatabaseProvider>
-                <VRChatProvider>
-                    <PAWProvider>
-                        <VrcLogProvider>
-                            {isChristmas() && snowEnabled && <Snowfall />}
-                            <SidebarProvider>
-                                <AppSidebar snowEnabled={snowEnabled} setSnowEnabled={setSnowEnabled} />
-                                <SidebarInset>
-                                    <div className="flex min-h-screen flex-col">
-                                        <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
-                                            <SidebarTrigger />
-                                        </header>
-                                        <main className="flex-1 p-6">
-                                            {children}
-                                        </main>
-                                    </div>
-                                </SidebarInset>
-                                <DiscordWidget />
-                            </SidebarProvider>
-                        </VrcLogProvider>
-                        <Toaster />
-                    </PAWProvider>
-                </VRChatProvider>
-            </DatabaseProvider>
+            <LanguageProvider>
+                <DatabaseProvider>
+                    <VRChatProvider>
+                        <PAWProvider>
+                            <VrcLogProvider>
+                                {isChristmas() && snowEnabled && <Snowfall />}
+                                <SidebarProvider>
+                                    <AppSidebar snowEnabled={snowEnabled} setSnowEnabled={setSnowEnabled} />
+                                    <SidebarInset>
+                                        <div className="flex min-h-screen flex-col">
+                                            <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
+                                                <SidebarTrigger />
+                                            </header>
+                                            <main className="flex-1 p-6">
+                                                {children}
+                                            </main>
+                                        </div>
+                                    </SidebarInset>
+                                    <DiscordWidget />
+                                </SidebarProvider>
+                            </VrcLogProvider>
+                            <Toaster />
+                        </PAWProvider>
+                    </VRChatProvider>
+                </DatabaseProvider>
+            </LanguageProvider>
         </ThemeProvider>
         </body>
         </html>

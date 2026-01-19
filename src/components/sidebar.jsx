@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Star, LogIn, LogOut, User, Download, Camera, Dice6, Clock, TreePine } from 'lucide-react';
+import { Search, Star, LogIn, LogOut, User, Download, Camera, Dice6, Clock, TreePine, Palette, Folder, Info } from 'lucide-react';
 import { getVersion } from '@tauri-apps/api/app';
 import { open } from '@tauri-apps/plugin-shell';
 import { usePathname } from 'next/navigation';
@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ToggleTheme } from '@/components/theme-toggle';
 import { useVRChat } from '@/context/vrchat-context';
 import { Button } from '@/components/ui/button';
 import { usePAW } from '@/context/paw-context';
@@ -82,11 +81,25 @@ export function AppSidebar({ snowEnabled, setSnowEnabled }) {
         checkUserAuth();
     }, []);
 
-    const configItems = user ? [{
+    const configItems = [{
+        title: 'Appearance',
+        url: '/appearance',
+        icon: Palette
+    }, {
+        title: 'Folder Access',
+        url: '/folders',
+        icon: Folder
+    }, {
+        title: 'About',
+        url: '/about',
+        icon: Info
+    }];
+
+    const loginThing = user ? [{
         title: 'Logout',
         action: async () => {
             const result = await logout();
-            
+
             result.success ? setUser(null) : toast.error('Failed to logout.');
         },
         icon: LogOut
@@ -186,6 +199,43 @@ export function AppSidebar({ snowEnabled, setSnowEnabled }) {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
+
+                <SidebarGroup className="mt-8">
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {loginThing.map((item) => {
+                                const Icon = item.icon;
+
+                                return (
+                                    <SidebarMenuItem key={item.title}>
+                                        {item.url ? (
+                                            <SidebarMenuButton
+                                                asChild
+                                                data-active={pathname === item.url}
+                                                className="w-full gap-2 [&[data-active=true]]:bg-accent [&[data-active=true]]:text-accent-foreground"
+                                            >
+                                                <Link href={item.url} className="flex items-center">
+                                                    <Icon className="h-4 w-4 mr-2" />
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        ) : (
+                                            <SidebarMenuButton
+                                                onClick={item.action}
+                                                className="w-full gap-2"
+                                            >
+                                                <div className="flex items-center">
+                                                    <Icon className="h-4 w-4 mr-2" />
+                                                    <span>{item.title}</span>
+                                                </div>
+                                            </SidebarMenuButton>
+                                        )}
+                                    </SidebarMenuItem>
+                                );
+                            })}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className="border-t border-border p-4">
                 {user ? (
@@ -203,7 +253,6 @@ export function AppSidebar({ snowEnabled, setSnowEnabled }) {
                                     <span className="text-xs text-muted-foreground">VRChat User</span>
                                 </div>
                             </div>
-                            <ToggleTheme />
                             {isChristmas() && (
                                 <Button onClick={() => setSnowEnabled(!snowEnabled)} variant="outline" size="icon">
                                     <TreePine className="h-[1.2rem] w-[1.2rem]" />
@@ -223,7 +272,6 @@ export function AppSidebar({ snowEnabled, setSnowEnabled }) {
                 ) : (
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between">
-                            <ToggleTheme />
                             {isChristmas() && (
                                 <Button onClick={() => setSnowEnabled(!snowEnabled)} variant="outline" size="icon">
                                     <TreePine className="h-[1.2rem] w-[1.2rem]" />

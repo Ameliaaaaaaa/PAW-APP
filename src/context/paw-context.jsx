@@ -10,7 +10,7 @@ const BASE_URL = 'https://paw-api.amelia.fun';
 const PAWContext = createContext(null);
 
 export function PAWProvider({ children }) {
-    const [currentVersion, setCurrentVersion] = useState('0.0.0');
+    const [currentVersion, setCurrentVersion] = useState('0.7.0');
 
     useEffect(() => {
         const setVersion = async () => {
@@ -82,6 +82,31 @@ export function PAWProvider({ children }) {
                 }
             });
         
+            return {
+                success: response.ok,
+                data: response.ok ? await response.json() : null
+            };
+        } catch (e) {
+            await error(e);
+
+            return {
+                success: false
+            };
+        }
+    };
+
+    const findSimilar = async (avatar_id) => {
+        try {
+            const response = await fetch(`${BASE_URL}/similar?${new URLSearchParams({
+                avatar_id: avatar_id
+            })}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': `PAW-APP/${currentVersion}`
+                }
+            });
+
             return {
                 success: response.ok,
                 data: response.ok ? await response.json() : null
@@ -192,6 +217,7 @@ export function PAWProvider({ children }) {
             fetchLatestVersion,
             fetchStats,
             searchAvatars,
+            findSimilar,
             refreshAvatar,
             fetchAvatar,
             fetchRandomAvatars,
@@ -201,7 +227,7 @@ export function PAWProvider({ children }) {
             {children}
         </PAWContext.Provider>
     );
-};
+}
 
 export function usePAW() {
     const context = useContext(PAWContext);

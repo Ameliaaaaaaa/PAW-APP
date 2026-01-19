@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Loader2, Shield, Eye, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { useLanguage } from '@/context/language-provider-context';
 import { Card, CardContent } from '@/components/ui/card';
 import SearchInput from '@/components/search-input';
 import AvatarCard from '@/components/avatar-card';
@@ -49,6 +50,7 @@ export default function Page() {
     const resizeObserverRef = useRef(null);
 
     const { fetchStats, searchAvatars } = usePAW();
+    const { lang, t } = useLanguage();
 
     useEffect(() => {
         const checkPrivacyNotice = async () => {
@@ -141,9 +143,9 @@ export default function Page() {
         try {
             const response = await fetchStats();
 
-            response.success ? setStats(response.stats) : toast.error('Failed to load stats.');
+            response.success ? setStats(response.stats) : toast.error(lang.MainPage.StatsLoadingFailed);
         } catch (e) {
-            toast.error('Failed to load stats.');
+            toast.error(lang.MainPage.StatsLoadingFailed);
         } finally {
             setStatsLoading(false);
         }
@@ -163,7 +165,7 @@ export default function Page() {
             const response = await searchAvatars(currentSearchType, currentQuery, currentPlatforms.join(','), pageRef, currentOrderBy);
 
             if (!response?.success || !response.data?.success) {
-                toast.error('Failed to fetch avatars.');
+                toast.error(lang.MainPage.AvatarFetchingFailed);
                 setHasNextPage(false);
                 setAllItemsLoaded(true);
                 return;
@@ -176,7 +178,7 @@ export default function Page() {
 
             pageRef.current += 1;
         } catch (e) {
-            toast.error('Failed to fetch avatars.');
+            toast.error(lang.MainPage.AvatarFetchingFailed);
             setHasNextPage(false);
             setAllItemsLoaded(true);
         } finally {
@@ -232,6 +234,10 @@ export default function Page() {
         return { top, left, width: `calc(${100 / gridColumns}% - ${GRID_GAP}px)` };
     };
 
+    let total;
+
+    if (stats) total = Array.from({ length: 10 }, (_, i) => i + 1) .reduce((sum, p) => sum + (stats.queue.priority[p] || 0), 0);
+
     return (
         <div>
             <UpdateTitle />
@@ -241,10 +247,10 @@ export default function Page() {
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-2xl">
                             <Shield className="h-6 w-6 text-primary" />
-                            Your Privacy Matters
+                            {lang.Privacy.Title}
                         </DialogTitle>
                         <DialogDescription className="text-base pt-4">
-                            Welcome to PAW! Here's how we protect your privacy:
+                            {lang.Privacy.Description}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -252,9 +258,9 @@ export default function Page() {
                         <div className="flex gap-3">
                             <Eye className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                             <div>
-                                <h4 className="font-semibold mb-1">Local Scanning Only</h4>
+                                <h4 className="font-semibold mb-1">{lang.Privacy.LocalScanning}</h4>
                                 <p className="text-sm text-muted-foreground">
-                                    PAW scans your VRChat output logs and amplitude cache file locally on your device to find avatar IDs you've encountered. Only these IDs are submitted to our servers.
+                                    {lang.Privacy.LocalScanningDesc}
                                 </p>
                             </div>
                         </div>
@@ -262,9 +268,9 @@ export default function Page() {
                         <div className="flex gap-3">
                             <Lock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                             <div>
-                                <h4 className="font-semibold mb-1">Your Data Stays Local</h4>
+                                <h4 className="font-semibold mb-1">{lang.Privacy.DataStorage}</h4>
                                 <p className="text-sm text-muted-foreground">
-                                    When you log in, your account information is <strong>never sent to PAW servers</strong>. All your personal data is stored and used exclusively on your device.
+                                    {lang.Privacy.DataStorageDesc}
                                 </p>
                             </div>
                         </div>
@@ -272,9 +278,9 @@ export default function Page() {
                         <div className="flex gap-3">
                             <Shield className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                             <div>
-                                <h4 className="font-semibold mb-1">Privacy First</h4>
+                                <h4 className="font-semibold mb-1">{lang.Privacy.PrivacyFirst}</h4>
                                 <p className="text-sm text-muted-foreground">
-                                    We believe in transparency. Your VRChat account credentials and personal information remain completely private to you.
+                                    {lang.Privacy.PrivacyFirstDesc}
                                 </p>
                             </div>
                         </div>
@@ -282,14 +288,14 @@ export default function Page() {
 
                     <DialogFooter>
                         <Button onClick={handlePrivacyAccept} className="w-full">
-                            I Understand
+                            {lang.Privacy.Understand}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
-            <h1 className="text-4xl font-bold mb-8 text-center">VRChat Avatar Search</h1>
-            <p className="text-center mb-8">Use the toggle to switch between searching by avatar name, description, author ID or AI.</p>
+            <h1 className="text-4xl font-bold mb-8 text-center">{lang.MainPage.Header}</h1>
+            <p className="text-center mb-8">{lang.MainPage.Subheader}</p>
 
             <div className="container mx-auto px-4 py-8" ref={containerRef}>
                 {statsLoading ? (
@@ -303,19 +309,24 @@ export default function Page() {
                                 <div className="grid grid-cols-4 gap-4 text-center">
                                     <div>
                                         <p className="text-2xl font-bold">{Number(stats.users).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
-                                        <p className="text-sm text-gray-500">Users</p>
+                                        <p className="text-sm text-gray-500">{lang.MainPage.Users}</p>
                                     </div>
                                     <div>
                                         <p className="text-2xl font-bold">{Number(stats.avatars).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
-                                        <p className="text-sm text-gray-500">Avatars</p>
+                                        <p className="text-sm text-gray-500">{lang.MainPage.Avatars}</p>
                                     </div>
                                     <div>
-                                        <p className="text-2xl font-bold">{Number(stats.queue.priority['1'] + stats.queue.priority['2']).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
-                                        <p className="text-sm text-gray-500">Avatars Queued</p>
+                                        <p className="text-2xl font-bold">
+                                            {total.toLocaleString('en-US', {
+                                                minimumFractionDigits: 0,
+                                                maximumFractionDigits: 2,
+                                            })}
+                                        </p>
+                                        <p className="text-sm text-gray-500">{lang.MainPage.AvatarsQueued}</p>
                                     </div>
                                     <div>
                                         <p className="text-2xl font-bold">{Number(stats.queue.active).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
-                                        <p className="text-sm text-gray-500">Avatars Processing</p>
+                                        <p className="text-sm text-gray-500">{lang.MainPage.AvatarsProcessing}</p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -326,10 +337,10 @@ export default function Page() {
                 <SearchInput onSearch={handleSearch} />
                 <br />
                 {!loading && hasSearched && avatars.length === 0 && (
-                    <div className="text-center mb-4">No avatars found. Try a different search term or platform combination.</div>
+                    <div className="text-center mb-4">{lang.MainPage.AvatarsNotFound}</div>
                 )}
                 {!loading && !hasSearched && (
-                    <div className="text-center mb-4">Enter a search term to find VRChat avatars.</div>
+                    <div className="text-center mb-4">{lang.MainPage.SearchText}</div>
                 )}
 
                 {hasSearched && (
@@ -369,9 +380,9 @@ export default function Page() {
                             {loading ? (
                                 <Loader2 className="h-8 w-8 animate-spin inline-block" />
                             ) : !allItemsLoaded ? (
-                                <div className="text-gray-400">Loading more results...</div>
+                                <div className="text-gray-400">{lang.MainPage.LoadingMoreResults}</div>
                             ) : (
-                                <div className="text-gray-400">End of results • {avatars.length} avatars found</div>
+                                <div className="text-gray-400">{t('MainPage.ResultsEnd', lang, { count: avatars.length })}</div>
                             )}
                         </div>
                     </div>
@@ -384,9 +395,11 @@ export default function Page() {
 const UpdateTitle = () => {
     try {
         if (typeof window === 'undefined') return null;
+
+        const { lang } = useLanguage();
       
         import('@tauri-apps/api/window').then((tauri) => {
-            tauri.getCurrentWindow().setTitle('PAW ~ Search Avatars');
+            tauri.getCurrentWindow().setTitle(lang.MainPage.Title);
         });
     } catch (error) {}
     

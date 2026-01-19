@@ -1,11 +1,11 @@
-use vrc_log::{parse_avatar_ids, watch};
-use vrc_log::provider::prelude::Paw;
-use std::{thread, time::Duration};
 use crossbeam::channel::unbounded;
-use vrc_log::provider::Provider;
-use tokio::sync::RwLock;
 use std::sync::Arc;
+use std::{thread, time::Duration};
 use tauri::State;
+use tokio::sync::RwLock;
+use vrc_log::provider::prelude::Paw;
+use vrc_log::provider::Provider;
+use vrc_log::{parse_avatar_ids, watch};
 
 type SharedAvatarStore = Arc<RwLock<Vec<String>>>;
 
@@ -16,9 +16,9 @@ impl Default for TauriSettings {
         Self(vrc_log::settings::Settings {
             clear_amplitude: true,
             attribution: vrc_log::settings::Attribution::Anonymous(
-                vrc_log::discord::DEVELOPER_ID.to_string()
+                vrc_log::discord::DEVELOPER_ID.to_string(),
             ),
-            providers: vec![vrc_log::provider::ProviderKind::PAW]
+            providers: vec![vrc_log::provider::ProviderKind::PAW],
         })
     }
 }
@@ -26,7 +26,7 @@ impl Default for TauriSettings {
 #[tauri::command]
 async fn start_log_watcher(
     path: String,
-    store: State<'_, SharedAvatarStore>
+    store: State<'_, SharedAvatarStore>,
 ) -> Result<(), String> {
     let (tx, rx) = unbounded();
 
@@ -74,11 +74,17 @@ async fn get_avatar_ids(store: State<'_, SharedAvatarStore>) -> Result<Vec<Strin
     Ok(store_read.clone())
 }
 
+#[tauri::command]
+fn close_app() {
+    std::process::exit(0);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let avatar_store: SharedAvatarStore = Arc::new(RwLock::new(Vec::new()));
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}))
         .manage(avatar_store)
         .plugin(tauri_plugin_dialog::init())
@@ -88,7 +94,7 @@ pub fn run() {
         .plugin(tauri_plugin_log::Builder::new().build())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_store::Builder::new().build())
-        .invoke_handler(tauri::generate_handler![start_log_watcher, get_avatar_ids])
+        .invoke_handler(tauri::generate_handler![start_log_watcher, get_avatar_ids, close_app])
         .run(tauri::generate_context!())
         .expect("error while running application");
 }

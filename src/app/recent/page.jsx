@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { error as err } from '@tauri-apps/plugin-log';
 import { Loader2 } from 'lucide-react';
 
 import { useVrcLog } from '@/context/vrc-log-context';

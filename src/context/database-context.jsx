@@ -41,20 +41,15 @@ export function DatabaseProvider({ children }) {
     };
 
     const getCategories = async () => {
+        if (!database) {
+            toast.error('Database not ready.');
+            return [];
+        }
+
         try {
-            const database = await Database.load('sqlite:PAW.db');
-
-            await database.execute(`CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
-            await database.execute(`CREATE TABLE IF NOT EXISTS favorites (id INTEGER PRIMARY KEY AUTOINCREMENT, avatar_id TEXT NOT NULL, avatar_data TEXT NOT NULL, category_id INTEGER NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE)`);
-
-            setDatabase(database);
-            setLoading(false);
-
             return await database.select('SELECT * FROM categories ORDER BY name;');
         } catch (e) {
             await error(e);
-        } finally {
-            setLoading(false);
         }
     };
 

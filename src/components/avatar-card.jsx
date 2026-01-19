@@ -6,12 +6,14 @@ import { toast } from 'sonner';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import SimilarAvatarsGraph from '@/components/similar-avatars-graph';
 import AvatarInfoDialog from '@/components/avatar-info-dialogue';
 import { RefreshDialog } from '@/components/refresh-dialogue';
 import { useDatabase } from '@/context/database-context';
 import { Separator } from '@/components/ui/separator';
 import { useVRChat } from '@/context/vrchat-context';
 import { Button } from '@/components/ui/button';
+import { usePAW } from '@/context/paw-context';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 
@@ -65,9 +67,10 @@ const PerformanceRating = ({ rating, platform }) => {
     );
 };
 
-export default function AvatarCard({ avatar }) {
+export default function AvatarCard({ avatar, fromGraph = false }) {
     const [isRefreshDialogOpen, setIsRefreshDialogOpen] = useState(false);
     const [isFavoriteDialogOpen, setIsFavoriteDialogOpen] = useState(false);
+    const [isSimilarGraphOpen, setIsSimilarGraphOpen] = useState(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -76,6 +79,7 @@ export default function AvatarCard({ avatar }) {
 
     const { currentUser, switchAvatar } = useVRChat();
     const { getCategories, checkFavorite, favoriteAvatar, removeFromFavorites } = useDatabase();
+    const { findSimilar } = usePAW();
 
     const loadCategories = async () => {
         const categories = await getCategories();
@@ -140,6 +144,26 @@ export default function AvatarCard({ avatar }) {
         } catch (e) {
             toast.error('Failed to select avatar.');
         }
+    };
+
+    const fetchSimilarAvatars = async (avatarId) => {
+        try {
+            const response = await findSimilar(avatarId);
+
+            if (!response.success) return toast.error('Failed to fetch similar avatars.');
+
+            const results = response.data.results || [];
+
+            return results.map((avatar, index) => ({
+                avatar: avatar
+            }));
+        } catch (e) {
+            toast.error('Failed to fetch similar avatars.');
+        }
+    };
+
+    const openSimilarGraph = () => {
+        setIsSimilarGraphOpen(true);
     };
 
     return (
@@ -237,9 +261,14 @@ export default function AvatarCard({ avatar }) {
                     <Button onClick={() => setIsRefreshDialogOpen(true)} variant="secondary" className="w-full h-8 text-xs" size="sm">
                         Request Refresh
                     </Button>
-                    <Button onClick={() => setIsInfoDialogOpen(true)} variant="secondary" className="w-full h-8 text-xs" size="sm">
-                        More Info
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button onClick={() => setIsInfoDialogOpen(true)} variant="secondary" className="w-full h-8 text-xs" size="sm">
+                            More Info
+                        </Button>
+                        <Button disabled={fromGraph} onClick={openSimilarGraph} variant="secondary" className="flex-1 h-8 text-xs" size="sm">
+                            Find Similar
+                        </Button>
+                    </div>
                 </div>
             </div>
             <RefreshDialog avatarId={avatar.id} isOpen={isRefreshDialogOpen} onClose={() => setIsRefreshDialogOpen(false)}/>
@@ -291,6 +320,8 @@ export default function AvatarCard({ avatar }) {
             </Dialog>
             
             <AvatarInfoDialog avatarId={avatar.id} isOpen={isInfoDialogOpen} onClose={() => setIsInfoDialogOpen(false)} />
+
+            <SimilarAvatarsGraph isOpen={isSimilarGraphOpen} onClose={() => setIsSimilarGraphOpen(false)} avatar={avatar} onFetchSimilar={fetchSimilarAvatars}/>
         </Card>
     );
 };
