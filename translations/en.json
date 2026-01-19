@@ -1,0 +1,60 @@
+{
+  "MainPage": {
+    "Title": "PAW ~ Search Avatars",
+    "Header": "VRChat Avatar Search",
+    "Subheader": "Use the toggle to switch between searching by avatar name, description, author ID or AI.",
+    "Users": "Users",
+    "Avatars": "Avatars",
+    "AvatarsQueued": "Avatars Queued",
+    "AvatarsProcessing": "Avatars Processing",
+    "AvatarsNotFound": "No avatars found. Try a different search term or platform combination.",
+    "SearchText": "Enter a search term to find VRChat avatars.",
+    "LoadingMoreResults": "Loading more results...",
+    "StatsLoadingFailed": "Failed to load stats.",
+    "AvatarFetchingFailed": "Failed to fetch avatars.",
+    "ResultsEnd": "End of results • {count} avatars found"
+  },
+  "Privacy": {
+    "Title": "Your Privacy Matters",
+    "Description": "Welcome to PAW! Here's how we protect your privacy:",
+    "LocalScanning": "Local Scanning Only",
+    "LocalScanningDesc": "PAW scans your VRChat output logs and amplitude cache file locally on your device to find avatar IDs you've encountered. Only these IDs are submitted to our servers.",
+    "Understand": "I Understand",
+    "DataStorage": "Your Data Stays Local",
+    "DataStorageDesc": "When you log in, your account information is never sent to PAW servers. All your personal data is stored and used exclusively on your device.",
+    "PrivacyFirst": "Privacy First",
+    "PrivacyFirstDesc": "We believe in transparency. Your VRChat account credentials and personal information remain completely private to you."
+  },
+  "Folders": {
+    "Title": "PAW ~ Configuration ~ Folder Access",
+    "Header": "Folder Access",
+    "LogsFolder": "Open Logs Folder",
+    "AppDataFolder": "Open App Data Folder",
+    "CacheFolder": "Open Cache Folder",
+    "ClearCache": "Clear Cache Folder",
+    "ClosePAW": {
+      "title": "Success",
+      "Message": "PAW will now close. You will need to relaunch."
+    }
+  },
+  "About": {
+    "Title": "PAW ~ Configuration ~ Folder Access",
+    "Header": "About PAW",
+    "Unknown": "Unknown",
+    "ApplicationVersion": "Application Version",
+    "TauriVersion": "Tauri Version",
+    "GitHub": "View on GitHub"
+  },
+  "SimilarAvatars": {
+    "Header": "Similar Avatars Graph",
+    "Description": "Click on any node to see details and fetch similar avatars. Drag to pan.",
+    "SimilarAvatarsNotFound": "No similar avatars found.",
+    "NewSimilarAvatarsNotFound": "No new similar avatars found.",
+    "AddedSimilarAvatars": "Added {count} similar avatars to the graph.",
+    "SimilarAvatarsLoadingFailed": "Failed to load similar avatars.",
+    "LoadingSimilarAvatars": "Loading similar avatars...",
+    "Results": "{nodes} avatar{s} • {edges} connection{ss}",
+    "ClickNode": "Click on a node to see avatar details and find similar avatars",
+    "Close": "Close"
+  }
+}
