@@ -1,0 +1,192 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+
+export function AvatarInfoDialog({ avatarId, isOpen, onClose }: { avatarId: string, isOpen: any, onClose: any }): JSX.Element {
+    const [avatar, setAvatar] = useState({});
+    const [isImageExpanded, setIsImageExpanded] = useState(false);
+
+    const fetchData: () => Promise<void> = async (): Promise<void> => {
+        try {
+            const avatarResponse: any = await window.electron.VRChat.getAvatar(avatarId);
+
+            setAvatar(avatarResponse);
+        } catch (error) {
+            toast.error('Failed to fetch avatar.');
+        }
+    };
+
+    useEffect((): void => {
+        isOpen ? fetchData() : setAvatar({});
+    }, [isOpen, avatarId]);
+
+    return (
+        <>
+            <Dialog open={isOpen} onOpenChange={onClose}>
+                <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <DialogHeader>
+                        {/* @ts-ignore */}
+                        <DialogTitle className="text-2xl font-bold tracking-tight">{avatar.name}</DialogTitle>
+                    </DialogHeader>
+                    <Tabs defaultValue="details" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 h-12">
+                            <TabsTrigger value="details" className="text-sm font-medium">Details</TabsTrigger>
+                            <TabsTrigger value="packages" className="text-sm font-medium">Unity Packages</TabsTrigger>
+                        </TabsList>
+                        <ScrollArea className="h-[70vh] w-full rounded-md mt-6">
+                            <TabsContent value="details" className="p-6 space-y-8">
+                                <div className="flex gap-8">
+                                    <div className="w-1/3">
+                                        <div className="relative aspect-[1/1] overflow-hidden rounded-xl cursor-pointer group" onClick={(): void => setIsImageExpanded(true)}>
+                                            {/* @ts-ignore */}
+                                            <img src={avatar.thumbnailImageUrl} alt={avatar.name} className="w-full h-full object-cover shadow-xl transition-transform group-hover:scale-105"/>
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                                <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium">Click to expand</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="w-2/3 space-y-8">
+                                        <div className="space-y-4">
+                                            <h3 className="text-xl font-semibold">Basic Information</h3>
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <div className="space-y-3">
+                                                    <p className="flex items-center">
+                                                        <span className="text-muted-foreground w-16 flex-shrink-0">ID</span>
+                                                        {/* @ts-ignore */}
+                                                        <span className="font-medium break-all">{avatar.id}</span>
+                                                    </p>
+                                                    <p className="flex justify-between">
+                                                        <span className="text-muted-foreground">Author</span>
+                                                        {/* @ts-ignore */}
+                                                        <span className="font-medium">{avatar.authorName}</span>
+                                                    </p>
+                                                    <p className="flex items-center">
+                                                        <span className="text-muted-foreground w-16 flex-shrink-0">Author ID</span>
+                                                        {/* @ts-ignore */}
+                                                        <span className="font-medium break-all">{avatar.authorId}</span>
+                                                    </p>
+                                                    <p className="flex justify-between">
+                                                        <span className="text-muted-foreground">Release Status</span>
+                                                        {/* @ts-ignore */}
+                                                        <Badge variant="outline" className="font-medium">{avatar.releaseStatus}</Badge>
+                                                    </p>
+                                                </div>
+                                                <div className="space-y-3">
+                                                    <p className="flex justify-between">
+                                                        <span className="text-muted-foreground">Version</span>
+                                                        {/* @ts-ignore */}
+                                                        <span className="font-medium">{avatar.version}</span>
+                                                    </p>
+                                                    <p className="flex justify-between">
+                                                        <span className="text-muted-foreground">Created</span>
+                                                        {/* @ts-ignore */}
+                                                        <span className="font-medium">{new Date(avatar.created_at).toLocaleString()}</span>
+                                                    </p>
+                                                    <p className="flex justify-between">
+                                                        <span className="text-muted-foreground">Updated</span>
+                                                        {/* @ts-ignore */}
+                                                        <span className="font-medium">{new Date(avatar.updated_at).toLocaleString()}</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <Separator />
+
+                                        <div className="space-y-4">
+                                            <h3 className="text-xl font-semibold">Description</h3>
+                                            {/* @ts-ignore */}
+                                            <p className="whitespace-pre-wrap text-muted-foreground leading-relaxed">{avatar.description}</p>
+                                        </div>
+
+                                        {/* @ts-ignore */}
+                                        {avatar.tags && avatar.tags.length > 0 && (
+                                            <>
+                                                <Separator />
+                                                <div className="space-y-4">
+                                                    <h3 className="text-xl font-semibold">Tags</h3>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {/* @ts-ignore */}
+                                                        {avatar.tags.map((tag: any, index: any): JSX.Element => (
+                                                            <Badge key={index} variant="secondary" className="px-3 py-1 text-sm">{tag}</Badge>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </TabsContent>
+                            <TabsContent value="packages" className="p-6 space-y-6">
+                                {/* @ts-ignore */}
+                                {avatar.unityPackages?.map((pkg: any, index: any): JSX.Element => (
+                                    <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <h3 className="text-xl font-semibold">Package {index + 1}</h3>
+                                            <Badge className="px-3 py-1">{pkg.platform}</Badge>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Unity Version</span>
+                                                    <span className="font-medium">{pkg.unityVersion}</span>
+                                                </p>
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Asset Version</span>
+                                                    <span className="font-medium">{pkg.assetVersion}</span>
+                                                </p>
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Performance</span>
+                                                    <Badge variant="outline">{pkg.performanceRating}</Badge>
+                                                </p>
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Created</span>
+                                                    <span className="font-medium">{new Date(pkg.created_at).toLocaleString()}</span>
+                                                </p>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Impostor Version</span>
+                                                    <span className="font-medium">{pkg.impostorizerVersion}</span>
+                                                </p>
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Unity Sort Number</span>
+                                                    <span className="font-medium">{pkg.unitySortNumber}</span>
+                                                </p>
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Scan Status</span>
+                                                    <span className="font-medium">{pkg.scanStatus || 'N/A'}</span>
+                                                </p>
+                                                <p className="flex justify-between">
+                                                    <span className="text-muted-foreground">Variant</span>
+                                                    <span className="font-medium">{pkg.variant || 'N/A'}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </TabsContent>
+                        </ScrollArea>
+                    </Tabs>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isImageExpanded} onOpenChange={setIsImageExpanded}>
+                <DialogContent className="max-w-screen-2xl max-h-screen p-0 overflow-hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <div className="relative w-full h-[65vh] flex items-center justify-center">
+                        {/* @ts-ignore */}
+                        <img src={avatar.imageUrl} alt={avatar.name} className="max-w-full max-h-full w-auto h-auto object-contain"/>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </>
+    );
+}
