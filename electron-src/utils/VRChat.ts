@@ -6,11 +6,22 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 
+import Discord from './DiscordRPC';
+
 export type AuthState = 'idle' | 'authenticating' | 'needs_2fa' | 'authenticated' | 'error';
 
 export interface AuthStatus {
     state: AuthState;
     error: string | null;
+}
+
+interface VRChatCookie {
+    name: string;
+    value: string;
+}
+
+interface VRChatClientInternal {
+    getCookies(): Promise<VRChatCookie[]>;
 }
 
 interface Deferred<T> {
@@ -35,6 +46,8 @@ function createDeferred<T>(): Deferred<T> {
     };
 }
 
+const PIPELINE_HEARTBEAT_INTERVAL_MS = 30_000;
+
 class VRChat extends EventEmitter {
     private static instance: VRChat;
 
@@ -45,6 +58,20 @@ class VRChat extends EventEmitter {
     private authError: string | null = null;
 
     private pending2FA: Deferred<string> | null = null;
+
+    private userId: string | null = null;
+
+    private pipelineAuthToken: string | null = null;
+
+    private pipelineHeartbeat: ReturnType<typeof setInterval> | null = null;
+
+    private currentAvatar: any = {
+        id: null,
+        name: null,
+        imageUrl: null,
+        thumbnailImageUrl: null,
+        authorName: null
+    };
 
     private constructor() {
         super();
@@ -64,6 +91,24 @@ class VRChat extends EventEmitter {
             keyv: new KeyvFile({
                 filename: path.join(pawDir, 'auth.json')
             })
+        });
+
+        // @ts-ignore
+        this.vrchat.pipeline.on('user-update', async (content: any): void => {
+            if (content.userId !== this.userId) return;
+            if (content.currentAvatar === this.currentAvatar.id) return;
+
+            const currentAvatar: any = await this.getOwnAvatar();
+
+            if (currentAvatar) {
+                this.currentAvatar.id = currentAvatar.id;
+                this.currentAvatar.name = currentAvatar.name;
+                this.currentAvatar.imageUrl = currentAvatar.imageUrl;
+                this.currentAvatar.thumbnailImageUrl = currentAvatar.thumbnailImageUrl;
+                this.currentAvatar.authorName = currentAvatar.authorName;
+            }
+
+            await Discord.setActivity({});
         });
     };
 
@@ -87,6 +132,49 @@ class VRChat extends EventEmitter {
         };
     };
 
+    public get pipeline(): VRC['pipeline'] {
+        return this.vrchat.pipeline;
+    };
+
+    private async getAuthCookieValue(): Promise<string | null> {
+        const cookies: VRChatCookie[] = await (this.vrchat as unknown as VRChatClientInternal).getCookies();
+
+        return cookies.find((cookie: VRChatCookie): boolean => cookie.name === 'auth')?.value ?? null;
+    };
+
+    private async connectPipeline(): Promise<void> {
+        const authToken: string | null = await this.getAuthCookieValue();
+
+        if (!authToken) return;
+
+        this.pipelineAuthToken = authToken;
+
+        await this.vrchat.pipeline.authenticate(authToken);
+        this.startPipelineHeartbeat();
+    };
+
+    private startPipelineHeartbeat(): void {
+        if (this.pipelineHeartbeat) return;
+
+        this.pipelineHeartbeat = setInterval((): void => {
+            if (this.authState !== 'authenticated') return;
+            if (this.vrchat.pipeline.connected) return;
+            if (!this.pipelineAuthToken) return;
+
+            this.vrchat.pipeline.authenticate(this.pipelineAuthToken).catch((error: unknown): void => {
+                console.error('Failed to reconnect VRChat pipeline:', error);
+            });
+        }, PIPELINE_HEARTBEAT_INTERVAL_MS);
+    };
+
+    private stopPipelineHeartbeat(): void {
+        if (!this.pipelineHeartbeat) return;
+
+        clearInterval(this.pipelineHeartbeat);
+
+        this.pipelineHeartbeat = null;
+    };
+
     public async initialize(): Promise<boolean> {
         try {
             const response: any = await this.vrchat.getCurrentUser();
@@ -94,7 +182,10 @@ class VRChat extends EventEmitter {
             const data: any = response?.data;
 
             if (data && !data.error && !('requiresTwoFactorAuth' in data)) {
+                this.userId = data.id;
+
                 this.setState('authenticated');
+                await this.connectPipeline();
 
                 return true;
             }
@@ -129,6 +220,7 @@ class VRChat extends EventEmitter {
             this.pending2FA = null;
 
             this.setState('authenticated');
+            await this.connectPipeline();
         } catch (error) {
             this.pending2FA?.reject(error);
 
@@ -157,6 +249,11 @@ class VRChat extends EventEmitter {
     };
 
     public async logout(): Promise<void> {
+        this.stopPipelineHeartbeat();
+        this.vrchat.pipeline.close();
+
+        this.pipelineAuthToken = null;
+
         await this.vrchat.logout();
 
         this.setState('idle');
@@ -185,6 +282,35 @@ class VRChat extends EventEmitter {
         });
 
         return response.data;
+    };
+
+    public async getOwnAvatar(): Promise<any> {
+        if (this.authState !== 'authenticated') return null;
+        if (!this.userId) return null;
+
+        const response: any = await this.vrchat.getOwnAvatar({
+            path: {
+                userId: this.userId
+            }
+        });
+
+        return response.data;
+    };
+
+    public async getCurrentAvatar(): Promise<any> {
+        if (!this.currentAvatar.id) {
+            const currentAvatar: any = await this.getOwnAvatar();
+
+            if (currentAvatar) {
+                this.currentAvatar.id = currentAvatar.id;
+                this.currentAvatar.name = currentAvatar.name;
+                this.currentAvatar.imageUrl = currentAvatar.imageUrl;
+                this.currentAvatar.thumbnailImageUrl = currentAvatar.thumbnailImageUrl;
+                this.currentAvatar.authorName = currentAvatar.authorName;
+            }
+        }
+
+        return this.currentAvatar;
     };
 }
 

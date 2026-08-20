@@ -41,12 +41,13 @@ contextBridge.exposeInMainWorld('electron', {
         findSimilar: (avatarId: string): Promise<any> => PAW.findSimilar(avatarId),
         refreshAvatar: (avatarId: string): Promise<any> => PAW.refreshAvatar(avatarId),
         fetchAvatar: (avatarId: string): Promise<any> => PAW.fetchAvatar(avatarId),
+        fetchDonators: (): Promise<any> => PAW.fetchDonators(),
         fetchRandomAvatars: (): Promise<any> => PAW.fetchRandomAvatars(),
         fetchRecentAvatars: (orderBy: string): Promise<any> => PAW.fetchRecentAvatars(orderBy)
     },
     VRChat: {
         getAuthStatus: (): any => ipcRenderer.invoke('vrchat:getAuthStatus'),
-        initialize: (): Promise<any> => ipcRenderer.invoke('vrchat:initialize'),
+        initialize: (): Promise<boolean> => ipcRenderer.invoke('vrchat:initialize'),
         login: (username: string, password: string): Promise<any> => ipcRenderer.invoke('vrchat:login', username, password),
         submitTwoFactor: (code: string): Promise<any> => ipcRenderer.invoke('vrchat:submitTwoFactor', code),
         cancelLogin: (): any => ipcRenderer.invoke('vrchat:cancelLogin'),
@@ -61,8 +62,8 @@ contextBridge.exposeInMainWorld('electron', {
         }
     },
     DiscordRPC: {
-        setActivity: ({ imageUrl, imageText, state }: { imageUrl?: string, imageText?: string, state: string }): void => {
-            ipcRenderer.send('discord:setActivity', { imageUrl, imageText, state });
+        setActivity: ({ details }: { details?: string }): void => {
+            ipcRenderer.send('discord:setActivity', { details });
         },
         setEnabled: (value: boolean): Promise<void> => ipcRenderer.invoke('discord:setEnabled', value),
         getEnabled: (): Promise<boolean> => ipcRenderer.invoke('discord:getEnabled')

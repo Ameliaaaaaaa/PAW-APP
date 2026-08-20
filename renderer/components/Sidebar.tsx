@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Star, LogIn, LogOut, User, Download, Camera, Dice6, Clock, TreePine, Palette, Folder, Info, MessageSquare } from 'lucide-react';
+import { Search, Star, LogIn, LogOut, User, Download, Camera, Dice6, Clock, TreePine, Palette, Folder, Info, MessageSquare, LockIcon, Ruler } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
@@ -104,7 +104,7 @@ export function AppSidebar({ snowEnabled, setSnowEnabled }: { snowEnabled: boole
 
     useEffect((): void => {
         window.electron.DiscordRPC.setActivity({
-            state: rpcPages[pathname] ?? 'Browsing PAW'
+            details: rpcPages[pathname] ?? 'Browsing PAW'
         });
     }, [pathname]);
 
@@ -149,7 +149,7 @@ export function AppSidebar({ snowEnabled, setSnowEnabled }: { snowEnabled: boole
         await window.electron.DiscordRPC.setEnabled(value);
 
         if (value) window.electron.DiscordRPC.setActivity({
-            state: rpcPages[pathname] ?? 'Browsing PAW'
+            details: rpcPages[pathname] ?? 'Browsing PAW'
         });
     };
 

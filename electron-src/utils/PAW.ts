@@ -184,6 +184,29 @@ class PAW {
         }
     };
 
+    public async fetchDonators(): Promise<any> {
+        try {
+            if (!CURRENT_VERSION) CURRENT_VERSION = await ipcRenderer.invoke('get-app-version');
+
+            const response: Response = await fetch(`${BASE_URL}/donators`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': `PAW-APP/${CURRENT_VERSION}`
+                }
+            });
+
+            return {
+                success: response.ok,
+                data: response.ok ? (await response.json()).data : null
+            };
+        } catch (error) {
+            return {
+                success: false
+            };
+        }
+    };
+
     public async fetchRecentAvatars(orderBy: string): Promise<any> {
         try {
             if (!CURRENT_VERSION) CURRENT_VERSION = await ipcRenderer.invoke('get-app-version');

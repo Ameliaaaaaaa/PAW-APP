@@ -33,11 +33,12 @@ declare global {
                 refreshAvatar(avatarId: string): Promise<any>;
                 fetchAvatar(avatarId: string): Promise<any>;
                 fetchRandomAvatars(): Promise<any>;
+                fetchDonators(): Promise<any>;
                 fetchRecentAvatars(orderBy: string): Promise<any>;
             };
             VRChat: {
                 getAuthStatus(): any;
-                initialize(): Promise<any>;
+                initialize(): Promise<boolean>;
                 login(username: string, password: string): Promise<any>;
                 submitTwoFactor(code: string): Promise<any>;
                 cancelLogin(): any;
@@ -48,7 +49,7 @@ declare global {
                 onAuthStateChange(status: any): any;
             },
             DiscordRPC: {
-                setActivity({ imageUrl, imageText, state }: { imageUrl?: string, imageText?: string, state: string }): void;
+                setActivity({ details }: { details?: string }): void;
                 setEnabled(value: boolean): Promise<void>;
                 getEnabled(): Promise<boolean>;
             }

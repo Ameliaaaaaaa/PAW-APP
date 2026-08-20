@@ -1,12 +1,16 @@
 // @ts-ignore
 import RPC from 'discord-rpc';
 
+import VRChat from './VRChat';
+
 class DiscordRPC {
     private static instance: DiscordRPC;
 
     private rpc: any;
 
     private enabled: boolean = false;
+
+    private currentDetails: string = 'Loading...';
 
     private constructor() {};
 
@@ -23,7 +27,7 @@ class DiscordRPC {
 
         this.rpc.on('ready', (): void => {
             this.setActivity({
-                state: 'Loading...'
+                details: this.currentDetails
             });
         });
 
@@ -42,7 +46,7 @@ class DiscordRPC {
                 this.initialize();
             } else {
                 this.setActivity({
-                    state: 'Loading...'
+                    details: this.currentDetails
                 });
             }
         }
@@ -52,16 +56,21 @@ class DiscordRPC {
         return this.enabled;
     };
 
-    public setActivity({ imageUrl, imageText, state }: { imageUrl?: string, imageText?: string, state: string }): void {
+    public async setActivity({ details }: { details?: string }): Promise<void> {
         if (!this.enabled) return;
 
+        if (details) this.currentDetails = details;
+
+        const currentAvatar: any = await VRChat.getCurrentAvatar();
+        const hasAvatar: boolean = Boolean(currentAvatar?.id);
+
         this.rpc.setActivity({
-            details: 'Using PAW',
-            ...(imageUrl && {
-                largeImageKey: imageUrl,
-                largeImageText: imageText
+            details: this.currentDetails,
+            ...(hasAvatar && {
+                largeImageKey: currentAvatar.imageUrl ? currentAvatar.imageUrl : currentAvatar.thumbnailImageUrl,
+                largeImageText: `${currentAvatar.name} - ${currentAvatar.authorName}`,
+                state: `Avatar: ${currentAvatar.name} - ${currentAvatar.authorName}`
             }),
-            state: state,
             startTimestamp: new Date(),
             instance: false
         });

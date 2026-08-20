@@ -1,7 +1,7 @@
 {
   "name": "PAW",
   "description": "The app counterpart of PAW created using Electron and Next.js.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://paw.amelia.fun",
   "repository": "https://github.com/Ameliaaaaaaa/PAW-APP",
   "author": "Amelia",

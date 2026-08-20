@@ -1,5 +1,5 @@
 if (typeof (Promise as any).withResolvers === 'undefined') {
-    (Promise as any).withResolvers = function <T>() {
+    (Promise as any).withResolvers = function <T>(): any {
         let resolve!: (value: T | PromiseLike<T>) => void;
         let reject!:  (reason?: unknown) => void;
 
@@ -163,11 +163,9 @@ ipcMain.handle('discord:getEnabled', (): boolean => {
     return DiscordRPC.getEnabled();
 });
 
-ipcMain.on('discord:setActivity', (_event: IpcMainEvent, { imageUrl, imageText, state }: { imageUrl?: string, imageText?: string, state: string }): void => {
+ipcMain.on('discord:setActivity', (_event: IpcMainEvent, { details }: { details?: string }): void => {
     DiscordRPC.setActivity({
-        imageUrl,
-        imageText,
-        state
+        details
     });
 });
 

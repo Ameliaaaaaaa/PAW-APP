@@ -100,13 +100,6 @@ export default function AvatarCard({ avatar, fromGraph = false }: { avatar: any,
     const equipAvatar:() => Promise<void> = async (): Promise<void> => {
         try {
             await window.electron.VRChat.switchAvatar(avatar.id);
-
-            window.electron.DiscordRPC.setActivity({
-                imageUrl: avatar.image_url ? avatar.image_url : avatar.thumbnail_url,
-                imageText: `${avatar.name} - ${avatar.author_name}`,
-                state: `Equipped avatar ${avatar.name}`
-            });
-
             toast.success('Avatar selected successfully.');
         } catch (error) {
             toast.error('Failed to select avatar.');
